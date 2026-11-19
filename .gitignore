@@ -14,3 +14,4 @@ oracle-ai-platform/responsys/runtime/
 # The supplied Responsys release ships its own built files
 !oracle-ai-platform/responsys/dist/
 !oracle-ai-platform/responsys/dist-server/
+download/
