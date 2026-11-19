@@ -1,0 +1,61 @@
+AIMarketing - Windows 64-bit portable installation
+
+1. Extract the complete AIMarketing folder to a writable folder, for example:
+   C:\Apps\AIMarketing
+   Do not run the application from inside the ZIP.
+
+2. Double-click Setup.cmd once. This creates a new, private local PostgreSQL
+   database and a fresh .env.local configuration. Node.js, PostgreSQL and the
+   application dependencies are included; separate installation is not needed.
+   Run as your normal Windows user, using the same user for Setup and Start.
+
+3. Double-click Start.cmd. Keep its window open. Open the URL shown there
+   (normally http://localhost:3000). If that port was already occupied at setup,
+   setup selects the next free port. The selected URL is in .env.local.
+
+4. Sign in locally with your email, create a workspace and account, then open
+   Summary -> Manage connection.
+
+CREDENTIAL FILE
+   <extracted folder>\config\responsys-credentials.json
+   Example: C:\Apps\AIMarketing\config\responsys-credentials.json
+
+   Fill in the blank username and password under "main", preserving valid JSON.
+   For a password containing a backslash, write it as \\ inside the JSON string;
+   write a double quote as \". Keep this file private.
+
+   In Manage connection enter:
+   - Your exact Responsys WS End Point / login URL.
+   - Server secret reference: file:main
+   Save and test the connection, then use Sync now. Connect graphs and run
+   diagnostics appear on Summary. Scheduled sync can be enabled there too.
+   The separate Pull jobs from API button has been removed as requested.
+
+   The server points to this file through:
+   RESPONSYS_CREDENTIALS_FILE=./config/responsys-credentials.json
+   in .env.local. This is relative, so the folder can be moved as a unit.
+
+NETWORK
+   Start.cmd uses the existing Windows proxy settings and trusted certificates.
+   Your VPN/proxy and outbound HTTPS access to Responsys must be available.
+   If your organization supplies an explicit proxy, set HTTPS_PROXY before
+   starting the application. Certificate validation remains enabled.
+
+DATA AND OPTIONAL AI
+   This bundle starts with a new database. Your current users, uploaded data,
+   job records, API credentials, AI keys and local .env.local are not included.
+   Synchronize Responsys and/or import your campaign files on the new system.
+   AI is off by default. To configure AI later, use the provided scripts and
+   .env.example as described in README.md.
+
+STOPPING / BACKUP
+   Close the application window to stop the app. To stop its database as well,
+   double-click Stop-Database.cmd. Keep the .local folder, var folder,
+   .env.local and config folder when backing up this installation.
+   Do not run Setup.cmd against an unrelated PostgreSQL installation.
+
+SOURCE
+   The complete application source, package-lock.json, Windows dependencies,
+   Node.js 24.19.0 and PostgreSQL 16.15 runtime are included.
+   This bundle targets Windows x64. Other operating systems need their native
+   Node.js/PostgreSQL installations and npm ci before using the source.

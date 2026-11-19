@@ -1,0 +1,74 @@
+Campaign ID,Campaign Name,Launch ID,Channel,Launch Date,Program,Subject Line,Creative Type,Offer,Currency,Sent,Delivered,Bounces,Unique Opens,Total Opens,Unique Clicks,Total Clicks,Conversions,Orders,Revenue,Unsubscribes,Complaints
+SAMPLE-EM-WELCOME,Sample - Welcome Series,SAMPLE-EM-WELCOME-W01,Email,2026-08-10,Onboarding,Welcome! Here's 10% off your first order,Hero image,10% off,USD,18501,18424,77,7389,10430,1775,2610,426,367,22398.68,10,0
+SAMPLE-SMS-FLASH,Sample - Flash Sale SMS,SAMPLE-SMS-FLASH-W01,SMS,2026-08-10,Promotions,,Text message,30% off,USD,30654,30243,411,,,2262,2862,345,344,16974.34,80,
+SAMPLE-EM-WEEKLY,Sample - Weekly Newsletter,SAMPLE-EM-WEEKLY-W01,Email,2026-08-11,Newsletter,This week's top picks,Multi-product grid,No offer,USD,120128,119622,506,26980,43840,4243,5465,495,480,23794.31,204,9
+SAMPLE-SMS-REMIND,Sample - Appointment Reminder SMS,SAMPLE-SMS-REMIND-W01,SMS,2026-08-11,Service,,Text message,No offer,USD,12443,12109,334,,,655,846,29,26,991.69,19,
+SAMPLE-EM-PROMO,Sample - Seasonal Promo,SAMPLE-EM-PROMO-W01,Email,2026-08-12,Promotions,Autumn sale: up to 40% off,Hero image,40% off,USD,91964,91482,482,26958,39582,4416,5470,937,881,72939.05,145,5
+SAMPLE-PUSH-APP,Sample - App Re-engagement Push,SAMPLE-PUSH-APP-W01,Push,2026-08-12,Retention,,Rich push,Free shipping,USD,54429,52931,1498,,,1499,2191,202,199,8881.30,47,
+SAMPLE-EM-WINBACK,Sample - Win-back,SAMPLE-EM-WINBACK-W01,Email,2026-08-13,Retention,We miss you - come back for 15% off,Plain text,15% off,USD,43784,43477,307,7028,12050,1260,1946,268,256,16292.23,36,1
+SAMPLE-EM-CART,Sample - Abandoned Cart,SAMPLE-EM-CART-W01,Email,2026-08-14,Triggered,You left something behind,Product carousel,Free shipping,USD,8243,8195,48,3619,5207,1194,1607,349,307,24878.86,15,0
+SAMPLE-SMS-FLASH,Sample - Flash Sale SMS,SAMPLE-SMS-FLASH-W02,SMS,2026-08-17,Promotions,,Text message,30% off,USD,30182,29880,302,,,2040,2463,432,424,21702.01,57,
+SAMPLE-EM-WEEKLY,Sample - Weekly Newsletter,SAMPLE-EM-WEEKLY-W02,Email,2026-08-18,Newsletter,This week's top picks,Multi-product grid,No offer,USD,113919,112952,967,26596,42348,4557,6196,413,412,22703.17,71,2
+SAMPLE-SMS-REMIND,Sample - Appointment Reminder SMS,SAMPLE-SMS-REMIND-W02,SMS,2026-08-18,Service,,Text message,No offer,USD,10939,10638,301,,,621,766,32,27,1136.29,35,
+SAMPLE-EM-PROMO,Sample - Seasonal Promo,SAMPLE-EM-PROMO-W02,Email,2026-08-19,Promotions,Last chance: 25% off everything,Animated GIF,25% off,USD,87583,86794,789,25547,38603,4273,5779,964,895,76387.20,155,1
+SAMPLE-PUSH-APP,Sample - App Re-engagement Push,SAMPLE-PUSH-APP-W02,Push,2026-08-19,Retention,,Rich push,Free shipping,USD,46283,45381,902,,,1423,1858,214,195,8269.21,59,
+SAMPLE-EM-WINBACK,Sample - Win-back,SAMPLE-EM-WINBACK-W02,Email,2026-08-20,Retention,We miss you - come back for 15% off,Plain text,15% off,USD,41765,41371,394,6534,9365,1183,1472,236,216,16492.34,75,1
+SAMPLE-EM-CART,Sample - Abandoned Cart,SAMPLE-EM-CART-W02,Email,2026-08-21,Triggered,You left something behind,Product carousel,Free shipping,USD,9001,8953,48,4791,8313,1212,1764,433,377,33727.43,11,0
+SAMPLE-EM-WELCOME,Sample - Welcome Series,SAMPLE-EM-WELCOME-W03,Email,2026-08-24,Onboarding,Welcome! Here's 10% off your first order,Hero image,10% off,USD,18827,18722,105,8021,14418,1866,2566,399,346,20270.84,18,1
+SAMPLE-SMS-FLASH,Sample - Flash Sale SMS,SAMPLE-SMS-FLASH-W03,SMS,2026-08-24,Promotions,,Text message,30% off,USD,32092,31665,427,,,2339,3006,386,331,15503.42,125,
+SAMPLE-EM-WEEKLY,Sample - Weekly Newsletter,SAMPLE-EM-WEEKLY-W03,Email,2026-08-25,Newsletter,This week's top picks,Multi-product grid,No offer,USD,113522,112868,654,26249,42406,3846,6008,547,470,24495.48,169,4
+SAMPLE-SMS-REMIND,Sample - Appointment Reminder SMS,SAMPLE-SMS-REMIND-W03,SMS,2026-08-25,Service,,Text message,No offer,USD,11436,11143,293,,,582,796,41,40,1617.85,35,
+SAMPLE-EM-PROMO,Sample - Seasonal Promo,SAMPLE-EM-PROMO-W03,Email,2026-08-26,Promotions,Autumn sale: up to 40% off,Hero image,40% off,USD,88013,87003,1010,25254,38798,5505,8384,727,628,48308.52,98,4
+SAMPLE-PUSH-APP,Sample - App Re-engagement Push,SAMPLE-PUSH-APP-W03,Push,2026-08-26,Retention,,Rich push,Free shipping,USD,46547,45806,741,,,1661,2378,197,189,7751.74,63,
+SAMPLE-EM-WINBACK,Sample - Win-back,SAMPLE-EM-WINBACK-W03,Email,2026-08-27,Retention,We miss you - come back for 15% off,Plain text,15% off,USD,41832,41440,392,6981,9418,1081,1443,273,242,15890.43,48,2
+SAMPLE-EM-CART,Sample - Abandoned Cart,SAMPLE-EM-CART-W03,Email,2026-08-28,Triggered,You left something behind,Product carousel,Free shipping,USD,8601,8550,51,4718,7178,1406,1996,334,333,30207.25,16,0
+SAMPLE-SMS-FLASH,Sample - Flash Sale SMS,SAMPLE-SMS-FLASH-W04,SMS,2026-08-31,Promotions,,Text message,30% off,USD,31902,31392,510,,,2512,3957,350,303,13400.95,83,
+SAMPLE-EM-WEEKLY,Sample - Weekly Newsletter,SAMPLE-EM-WEEKLY-W04,Email,2026-09-01,Newsletter,This week's top picks,Multi-product grid,No offer,USD,120068,118769,1299,28941,51526,3960,5046,537,510,26564.49,80,10
+SAMPLE-SMS-REMIND,Sample - Appointment Reminder SMS,SAMPLE-SMS-REMIND-W04,SMS,2026-09-01,Service,,Text message,No offer,USD,11453,11200,253,,,650,832,38,33,1316.97,41,
+SAMPLE-EM-PROMO,Sample - Seasonal Promo,SAMPLE-EM-PROMO-W04,Email,2026-09-02,Promotions,Last chance: 25% off everything,Animated GIF,25% off,USD,90178,89389,789,26935,40661,5493,7740,1029,906,73723.57,76,4
+SAMPLE-PUSH-APP,Sample - App Re-engagement Push,SAMPLE-PUSH-APP-W04,Push,2026-09-02,Retention,,Rich push,Free shipping,USD,53461,52828,633,,,1687,2211,184,177,8183.42,47,
+SAMPLE-EM-WINBACK,Sample - Win-back,SAMPLE-EM-WINBACK-W04,Email,2026-09-03,Retention,We miss you - come back for 15% off,Plain text,15% off,USD,41373,41109,264,5955,9980,943,1304,278,277,17735.11,33,1
+SAMPLE-EM-CART,Sample - Abandoned Cart,SAMPLE-EM-CART-W04,Email,2026-09-04,Triggered,You left something behind,Product carousel,Free shipping,USD,9779,9671,108,5443,8081,1324,2030,512,482,44962.39,14,0
+SAMPLE-EM-WELCOME,Sample - Welcome Series,SAMPLE-EM-WELCOME-W05,Email,2026-09-07,Onboarding,Welcome! Here's 10% off your first order,Hero image,10% off,USD,18868,18710,158,8673,11316,1645,2555,486,452,29899.34,25,0
+SAMPLE-SMS-FLASH,Sample - Flash Sale SMS,SAMPLE-SMS-FLASH-W05,SMS,2026-09-07,Promotions,,Text message,30% off,USD,29398,28528,870,,,2260,3561,324,322,14462.39,110,
+SAMPLE-EM-WEEKLY,Sample - Weekly Newsletter,SAMPLE-EM-WEEKLY-W05,Email,2026-09-08,Newsletter,This week's top picks,Multi-product grid,No offer,USD,111058,110340,718,32026,54382,4793,7475,436,386,19543.46,184,10
+SAMPLE-SMS-REMIND,Sample - Appointment Reminder SMS,SAMPLE-SMS-REMIND-W05,SMS,2026-09-08,Service,,Text message,No offer,USD,11437,11298,139,,,620,924,35,32,1282.92,24,
+SAMPLE-EM-PROMO,Sample - Seasonal Promo,SAMPLE-EM-PROMO-W05,Email,2026-09-09,Promotions,Autumn sale: up to 40% off,Hero image,40% off,USD,93221,92386,835,26007,45900,6313,10040,1047,1028,72563.09,148,4
+SAMPLE-PUSH-APP,Sample - App Re-engagement Push,SAMPLE-PUSH-APP-W05,Push,2026-09-09,Retention,,Rich push,Free shipping,USD,50765,49999,766,,,1785,2143,262,243,11414.89,80,
+SAMPLE-EM-WINBACK,Sample - Win-back,SAMPLE-EM-WINBACK-W05,Email,2026-09-10,Retention,We miss you - come back for 15% off,Plain text,15% off,USD,43446,42994,452,6789,11577,1030,1560,200,196,14703.98,35,3
+SAMPLE-EM-CART,Sample - Abandoned Cart,SAMPLE-EM-CART-W05,Email,2026-09-11,Triggered,You left something behind,Product carousel,Free shipping,USD,8928,8871,57,5050,7139,1192,1522,416,407,37825.41,8,0
+SAMPLE-SMS-FLASH,Sample - Flash Sale SMS,SAMPLE-SMS-FLASH-W06,SMS,2026-09-14,Promotions,,Text message,30% off,USD,29850,29045,805,,,2038,2783,421,370,18457.45,72,
+SAMPLE-EM-WEEKLY,Sample - Weekly Newsletter,SAMPLE-EM-WEEKLY-W06,Email,2026-09-15,Newsletter,This week's top picks,Multi-product grid,No offer,USD,124095,123238,857,31088,50739,4707,6239,645,617,32579.79,118,6
+SAMPLE-SMS-REMIND,Sample - Appointment Reminder SMS,SAMPLE-SMS-REMIND-W06,SMS,2026-09-15,Service,,Text message,No offer,USD,11385,11122,263,,,544,816,42,36,1418.44,16,
+SAMPLE-EM-PROMO,Sample - Seasonal Promo,SAMPLE-EM-PROMO-W06,Email,2026-09-16,Promotions,Last chance: 25% off everything,Animated GIF,25% off,USD,93145,92553,592,26595,40164,6627,9747,1112,1047,78414.87,122,1
+SAMPLE-PUSH-APP,Sample - App Re-engagement Push,SAMPLE-PUSH-APP-W06,Push,2026-09-16,Retention,,Rich push,Free shipping,USD,54579,53468,1111,,,1595,2072,280,257,12262.18,80,
+SAMPLE-EM-WINBACK,Sample - Win-back,SAMPLE-EM-WINBACK-W06,Email,2026-09-17,Retention,We miss you - come back for 15% off,Plain text,15% off,USD,38295,38011,284,5561,9049,947,1303,181,166,12552.34,64,1
+SAMPLE-EM-CART,Sample - Abandoned Cart,SAMPLE-EM-CART-W06,Email,2026-09-18,Triggered,You left something behind,Product carousel,Free shipping,USD,8252,8185,67,4638,6806,1443,2165,452,399,31874.20,4,0
+SAMPLE-EM-WELCOME,Sample - Welcome Series,SAMPLE-EM-WELCOME-W07,Email,2026-09-21,Onboarding,Welcome! Here's 10% off your first order,Hero image,10% off,USD,19756,19583,173,10578,18466,2150,3198,463,451,28229.72,36,1
+SAMPLE-SMS-FLASH,Sample - Flash Sale SMS,SAMPLE-SMS-FLASH-W07,SMS,2026-09-21,Promotions,,Text message,30% off,USD,29425,29034,391,,,2374,2969,431,368,17289.59,78,
+SAMPLE-EM-WEEKLY,Sample - Weekly Newsletter,SAMPLE-EM-WEEKLY-W07,Email,2026-09-22,Newsletter,This week's top picks,Multi-product grid,No offer,USD,119392,118667,725,31907,51652,5291,7452,588,524,26384.61,110,4
+SAMPLE-SMS-REMIND,Sample - Appointment Reminder SMS,SAMPLE-SMS-REMIND-W07,SMS,2026-09-22,Service,,Text message,No offer,USD,10865,10617,248,,,557,771,30,27,1017.72,21,
+SAMPLE-EM-PROMO,Sample - Seasonal Promo,SAMPLE-EM-PROMO-W07,Email,2026-09-23,Promotions,Autumn sale: up to 40% off,Hero image,40% off,USD,91574,90812,762,26840,37995,6236,9245,796,725,57031.93,102,3
+SAMPLE-PUSH-APP,Sample - App Re-engagement Push,SAMPLE-PUSH-APP-W07,Push,2026-09-23,Retention,,Rich push,Free shipping,USD,52612,51687,925,,,1968,3016,219,188,7646.80,67,
+SAMPLE-EM-WINBACK,Sample - Win-back,SAMPLE-EM-WINBACK-W07,Email,2026-09-24,Retention,We miss you - come back for 15% off,Plain text,15% off,USD,39361,38919,442,5571,9179,1061,1598,195,165,11207.56,63,3
+SAMPLE-EM-CART,Sample - Abandoned Cart,SAMPLE-EM-CART-W07,Email,2026-09-25,Triggered,You left something behind,Product carousel,Free shipping,USD,9816,9744,72,5792,9111,1659,2137,459,420,32337.24,9,0
+SAMPLE-SMS-FLASH,Sample - Flash Sale SMS,SAMPLE-SMS-FLASH-W08,SMS,2026-09-28,Promotions,,Text message,30% off,USD,32097,31249,848,,,2333,3696,478,465,23245.43,72,
+SAMPLE-EM-WEEKLY,Sample - Weekly Newsletter,SAMPLE-EM-WEEKLY-W08,Email,2026-09-29,Newsletter,This week's top picks,Multi-product grid,No offer,USD,131997,131100,897,39214,66295,5804,8715,748,658,32718.51,95,3
+SAMPLE-SMS-REMIND,Sample - Appointment Reminder SMS,SAMPLE-SMS-REMIND-W08,SMS,2026-09-29,Service,,Text message,No offer,USD,12561,12193,368,,,686,1044,44,40,1579.38,38,
+SAMPLE-EM-PROMO,Sample - Seasonal Promo,SAMPLE-EM-PROMO-W08,Email,2026-09-30,Promotions,Last chance: 25% off everything,Animated GIF,25% off,USD,98219,97383,836,30020,49524,6999,8868,1105,1063,76521.88,168,9
+SAMPLE-PUSH-APP,Sample - App Re-engagement Push,SAMPLE-PUSH-APP-W08,Push,2026-09-30,Retention,,Rich push,Free shipping,USD,47683,46394,1289,,,1851,2285,258,228,10187.58,65,
+SAMPLE-EM-WINBACK,Sample - Win-back,SAMPLE-EM-WINBACK-W08,Email,2026-10-01,Retention,We miss you - come back for 15% off,Plain text,15% off,USD,36864,36709,155,4861,7965,1005,1365,205,176,12789.67,52,1
+SAMPLE-EM-CART,Sample - Abandoned Cart,SAMPLE-EM-CART-W08,Email,2026-10-02,Triggered,You left something behind,Product carousel,Free shipping,USD,9490,9388,102,5562,7567,1821,2755,479,437,36183.47,11,0
+SAMPLE-EM-WELCOME,Sample - Welcome Series,SAMPLE-EM-WELCOME-W09,Email,2026-10-05,Onboarding,Welcome! Here's 10% off your first order,Hero image,10% off,USD,17564,17490,74,9748,13558,1783,2708,406,398,25668.88,15,0
+SAMPLE-SMS-FLASH,Sample - Flash Sale SMS,SAMPLE-SMS-FLASH-W09,SMS,2026-10-05,Promotions,,Text message,30% off,USD,27757,26998,759,,,2337,3620,413,380,18022.83,41,
+SAMPLE-EM-WEEKLY,Sample - Weekly Newsletter,SAMPLE-EM-WEEKLY-W09,Email,2026-10-06,Newsletter,This week's top picks,Multi-product grid,No offer,USD,130753,130141,612,40434,62441,6085,8982,683,630,36680.02,83,4
+SAMPLE-SMS-REMIND,Sample - Appointment Reminder SMS,SAMPLE-SMS-REMIND-W09,SMS,2026-10-06,Service,,Text message,No offer,USD,10923,10609,314,,,653,998,37,31,1272.10,12,
+SAMPLE-EM-PROMO,Sample - Seasonal Promo,SAMPLE-EM-PROMO-W09,Email,2026-10-07,Promotions,Autumn sale: up to 40% off,Hero image,40% off,USD,98643,98007,636,33347,51242,6746,9243,1201,1080,87657.70,88,3
+SAMPLE-PUSH-APP,Sample - App Re-engagement Push,SAMPLE-PUSH-APP-W09,Push,2026-10-07,Retention,,Rich push,Free shipping,USD,46491,45503,988,,,1593,2544,191,184,8456.06,76,
+SAMPLE-EM-WINBACK,Sample - Win-back,SAMPLE-EM-WINBACK-W09,Email,2026-10-08,Retention,We miss you - come back for 15% off,Plain text,15% off,USD,36965,36761,204,4564,7156,932,1187,164,151,11044.77,72,2
+SAMPLE-EM-CART,Sample - Abandoned Cart,SAMPLE-EM-CART-W09,Email,2026-10-09,Triggered,You left something behind,Product carousel,Free shipping,USD,8609,8568,41,4787,6767,1344,1620,484,431,40110.16,11,0
+SAMPLE-SMS-FLASH,Sample - Flash Sale SMS,SAMPLE-SMS-FLASH-W10,SMS,2026-10-12,Promotions,,Text message,30% off,USD,31241,30490,751,,,2673,3942,543,525,25830.29,90,
+SAMPLE-EM-WEEKLY,Sample - Weekly Newsletter,SAMPLE-EM-WEEKLY-W10,Email,2026-10-13,Newsletter,This week's top picks,Multi-product grid,No offer,USD,113416,112489,927,33947,51645,5540,8841,526,496,27878.15,181,10
+SAMPLE-SMS-REMIND,Sample - Appointment Reminder SMS,SAMPLE-SMS-REMIND-W10,SMS,2026-10-13,Service,,Text message,No offer,USD,13040,12799,241,,,823,1200,56,54,1974.85,19,
+SAMPLE-EM-PROMO,Sample - Seasonal Promo,SAMPLE-EM-PROMO-W10,Email,2026-10-14,Promotions,Last chance: 25% off everything,Animated GIF,25% off,USD,89447,88939,508,31475,43389,5604,6893,814,746,59279.74,83,3
+SAMPLE-PUSH-APP,Sample - App Re-engagement Push,SAMPLE-PUSH-APP-W10,Push,2026-10-14,Retention,,Rich push,Free shipping,USD,48076,46876,1200,,,1823,2398,202,192,8985.14,89,

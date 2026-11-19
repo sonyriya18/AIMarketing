@@ -1,0 +1,35 @@
+# Netlify: static frontend from dist/, API as the "api" function (/api/*), scheduled jobs.
+# Secrets and per-site settings are Netlify environment variables — never put them here.
+# Setup guide: docs/DEPLOY_NETLIFY.md
+
+[build]
+  command = "npm run build:web"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
+  # Optional native binding that pg only loads on request; never used here.
+  external_node_modules = ["pg-native"]
+
+# Single-page app: every non-API, non-file path serves the app shell.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self'; frame-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

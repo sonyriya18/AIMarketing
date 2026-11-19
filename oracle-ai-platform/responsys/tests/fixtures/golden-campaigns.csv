@@ -1,0 +1,4 @@
+Campaign ID,Campaign Name,Launch ID,Channel,Launch Date,Sent,Delivered,Bounces,Total Opens,Total Clicks,Conversions,Revenue,Unsubscribes
+TEST-CAMP-A,Test campaign A,L-A1,Email,2026-10-01,1020,1000,20,100,20,5,500.00,1
+TEST-CAMP-B,Test campaign B,L-B1,Email,2026-10-02,9180,9000,180,2700,450,90,9000.00,9
+TEST-CAMP-C,Test campaign C,L-C1,Email,2026-09-25,1020,1000,20,250,40,10,10000.00,2

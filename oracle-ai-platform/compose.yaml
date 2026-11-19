@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+      RUN_WORKER: "false"
+      DATABASE_MIGRATION_URL: ""
+    ports:
+      - "127.0.0.1:3100:3100"
+    restart: unless-stopped
+  worker:
+    build: .
+    command: ["node", "dist-server/worker.js"]
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+      DATABASE_MIGRATION_URL: ""
+    healthcheck:
+      disable: true
+    restart: unless-stopped
+# Use a separately provisioned PostgreSQL service with encrypted backups.
+# Terminate TLS at your approved reverse proxy and route to web:3100.

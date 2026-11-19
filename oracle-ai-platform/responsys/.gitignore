@@ -1,0 +1,19 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+var/
+dist-server/
+test-results/
+playwright-report/
+
+# Netlify CLI link state
+.netlify/
+
+# Portable-installation state and private credentials
+.local/
+config/responsys-credentials.json

@@ -1,0 +1,7 @@
+AIMarketing project export
+Created: 2026-11-16 20:47:21
+Includes current application source, compiled builds, tests, package lock, Windows runtimes and dependencies.
+Extract the complete folder, run Setup.cmd once, then Start.cmd. See INSTALL-WINDOWS.txt.
+Sign in with email, then choose Amil or Endeavour Group - DM.
+Excluded: local environment settings, API keys, real Responsys credentials, local database, customer uploads, logs and temporary browser results.
+The exported application starts with a fresh database. Upload each account's CSV separately. Your existing installation and data have not been changed.
