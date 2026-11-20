@@ -246,6 +246,13 @@ export function FlowDiagram({ flow, title }: { flow: Flow; title: string }) {
  * Untrusted email HTML in a frame with no scripts, forms or same-origin access. Remote images
  * (which can include tracking pixels) load only when asked.
  */
+/** Short fingerprint of the preview document (changes whenever the email changes). */
+const docKey = (doc: string) => {
+  let h = 0;
+  for (let i = 0; i < doc.length; i++) h = (h * 31 + doc.charCodeAt(i)) | 0;
+  return doc.length + ":" + h;
+};
+
 export function EmailPreview({
   subject,
   preheader,
@@ -296,6 +303,9 @@ export function EmailPreview({
           {preheader && <span className="preheader">{preheader}</span>}
         </div>
         <iframe
+          // A new frame for each version of the email: some browsers keep showing the first
+          // version when only the content of a sandboxed frame changes.
+          key={docKey(doc)}
           title={`Email preview: ${subject || "untitled"}`}
           sandbox="allow-popups"
           srcDoc={doc}
@@ -992,7 +1002,68 @@ export function EmailBuilder({
     [preheader, setPreheader] = useState(""),
     [blocks, setBlocks] = useState<Block[]>([]),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState<unknown>(null);
+    [error, setError] = useState<unknown>(null),
+    [instruction, setInstruction] = useState(""),
+    [refining, setRefining] = useState(false),
+    [refineNote, setRefineNote] = useState(""),
+    [proposal, setProposal] = useState<{
+      subject: string;
+      preheader: string;
+      blocks: Block[];
+      changes: string[];
+      model: string;
+      rules: boolean;
+    } | null>(null);
+  // "Refine with AI": ask for changes in your own words; review the proposal before applying it.
+  const refine = async (ask: string) => {
+    if (!report)
+      return setError(
+        Error("Load data first: AI edits use the assessment as evidence."),
+      );
+    if (!ask.trim()) return;
+    setRefining(true);
+    setRefineNote("");
+    setError(null);
+    try {
+      const r = await api("/sources/" + source.id + "/email/refine", {
+        reportId: report.id,
+        instruction: ask.trim(),
+        email: {
+          subject,
+          preheader,
+          blocks: blocks.map(({ type, text, url }) => ({ type, text, url })),
+        },
+      });
+      if (!r.ok) setRefineNote(r.reason);
+      else
+        setProposal({
+          subject: r.email.subject,
+          preheader: r.email.preheader,
+          blocks: r.email.blocks.map((b: Omit<Block, "id">) => ({
+            ...b,
+            id: newId(),
+          })),
+          changes: r.changes,
+          model: r.model,
+          rules: r.rules,
+        });
+    } catch (e) {
+      setError(e);
+    } finally {
+      setRefining(false);
+    }
+  };
+  const applyProposal = () => {
+    if (!proposal) return;
+    setSubject(proposal.subject);
+    setPreheader(proposal.preheader);
+    setBlocks(proposal.blocks);
+    setProposal(null);
+    setInstruction("");
+    notify(
+      "AI changes applied to the builder. Review them, then Save as draft.",
+    );
+  };
   const start = (k: string) => {
     const s = STARTERS[k]!;
     setSubject(s.subject);
@@ -1109,6 +1180,88 @@ export function EmailBuilder({
       >
         <div className="builder-grid">
           <div className="builder-form">
+            <section className="refine-ai" aria-label="Refine with AI">
+              <div className="refine-head">
+                <span className="refine-icon">
+                  <Sparkles size={18} />
+                </span>
+                <div>
+                  <strong>Refine with AI</strong>
+                  <small>
+                    Ask for changes in your own words. You review every change
+                    before it is applied; nothing is saved until you click Save
+                    as draft.
+                  </small>
+                </div>
+              </div>
+              <div className="refine-chips">
+                {[
+                  "Make the subject line shorter and clearer",
+                  "Make the tone friendlier",
+                  "Make the call to action stronger",
+                  "Tighten the copy and remove repetition",
+                ].map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    className="chip"
+                    disabled={refining || !!proposal}
+                    onClick={() => {
+                      setInstruction(q);
+                      void refine(q);
+                    }}
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+              <textarea
+                aria-label="What should change?"
+                rows={2}
+                maxLength={1000}
+                value={instruction}
+                placeholder="e.g. Make it about the new season range and keep it under 80 words"
+                onChange={(e) => setInstruction(e.target.value)}
+              />
+              <div className="button-row">
+                <Button
+                  primary
+                  busy={refining}
+                  disabled={!!proposal || instruction.trim().length < 3}
+                  onClick={() => refine(instruction)}
+                >
+                  <Sparkles size={15} /> Propose changes
+                </Button>
+              </div>
+              {refineNote && <p className="notice">{refineNote}</p>}
+              {proposal && (
+                <div className="refine-proposal" aria-label="AI proposal">
+                  <b>Proposed changes (not applied yet)</b>
+                  <ul>
+                    {proposal.changes.length ? (
+                      proposal.changes.map((c, i) => <li key={i}>{c}</li>)
+                    ) : (
+                      <li>See the preview on the right.</li>
+                    )}
+                    {proposal.subject !== subject && (
+                      <li>
+                        Subject: “{subject}” → “{proposal.subject}”
+                      </li>
+                    )}
+                  </ul>
+                  <small className="muted">
+                    {proposal.model} · links kept as they were · no new numbers
+                    {proposal.rules ? " · client marketing rules applied" : ""}
+                  </small>
+                  <div className="button-row">
+                    <Button primary onClick={applyProposal}>
+                      Apply changes
+                    </Button>
+                    <Button onClick={() => setProposal(null)}>Discard</Button>
+                  </div>
+                </div>
+              )}
+            </section>
             <Field label="Sender name">
               <input value={brand} onChange={(e) => setBrand(e.target.value)} />
             </Field>
@@ -1227,12 +1380,19 @@ export function EmailBuilder({
               </Button>
             </div>
           </div>
-          <EmailPreview
-            subject={subject}
-            preheader={preheader}
-            html={html}
-            from={brand}
-          />
+          <div>
+            {proposal && (
+              <p className="refine-banner">
+                Preview of the AI proposal. Apply or discard it on the left.
+              </p>
+            )}
+            <EmailPreview
+              subject={proposal ? proposal.subject : subject}
+              preheader={proposal ? proposal.preheader : preheader}
+              html={proposal ? emailHtml(proposal.blocks, brand) : html}
+              from={brand}
+            />
+          </div>
         </div>
       </Panel>
     </div>

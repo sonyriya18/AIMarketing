@@ -1,1 +1,1 @@
-Oracle AI Platform - release 2026-11-20d (Responsys card like the others; no v17 wording)
+Oracle AI Platform - release 2026-11-20e (Eloqua Email Builder: Refine with AI; email preview fix)

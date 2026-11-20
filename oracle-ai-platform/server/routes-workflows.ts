@@ -21,7 +21,13 @@ import {
   previewDefinition,
   OPERATORS,
 } from "./modules/unity";
-import { draftWithAI, hypothesesWithAI, audienceWithAI } from "./ai";
+import {
+  draftWithAI,
+  hypothesesWithAI,
+  audienceWithAI,
+  refineEmailWithAI,
+  evidenceOf,
+} from "./ai";
 import { reportAccess, datasetRecords, buildReport } from "./context";
 import { approvedDocuments } from "./routes-data";
 import { evaluateActions } from "./outcomes";
@@ -396,6 +402,112 @@ export function registerWorkflows(
         });
       });
       res.status(201).json({ id: did, generator, note });
+    }),
+  );
+  // ---------------- Eloqua Email Builder: "Refine with AI" ----------------
+  // The person asks for changes in their own words; the AI returns a proposal that is shown for
+  // review and applied only when they accept it. Nothing is saved or sent to Eloqua here.
+  api.post(
+    "/sources/:id/email/refine",
+    asyncRoute(async (req, res) => {
+      const s = await sourceAccess(db, req, req.params.id, true),
+        c = requireWorkspace(req, true);
+      if (s.app !== "eloqua")
+        throw new HttpError(
+          422,
+          "Email refinement is part of the Eloqua Email Builder",
+        );
+      const block = z.object({
+        type: z.enum(["heading", "text", "button", "image", "divider"]),
+        text: z.string().max(4000),
+        url: z.string().max(500),
+      });
+      const v = z
+        .object({
+          reportId: z.string(),
+          instruction: z.string().trim().min(3).max(1000),
+          email: z.object({
+            subject: z.string().max(150),
+            preheader: z.string().max(200),
+            blocks: z.array(block).max(30),
+          }),
+        })
+        .parse(req.body);
+      if (cfg.aiProvider === "none")
+        throw new HttpError(
+          503,
+          "AI editing is not configured. Add your OpenAI key and model with 1-SETUP.cmd (or in .env), then restart. You can still edit the email directly.",
+        );
+      const { report } = await reportAccess(db, req, v.reportId);
+      if (report.sourceId !== s.id)
+        throw new HttpError(422, "Report belongs to a different source");
+      const runId = id();
+      await db.tenant(c.workspaceId, async (tx) => {
+        await tx.query("SELECT id FROM workspaces WHERE id=$1 FOR UPDATE", [
+          c.workspaceId,
+        ]);
+        const n = (
+          await tx.query(
+            "SELECT count(*)::int AS n FROM ai_runs WHERE workspace_id=$1 AND created_at>=date_trunc('day',now())",
+            [c.workspaceId],
+          )
+        ).rows[0].n;
+        if (n >= cfg.aiLimit)
+          throw new HttpError(429, "Workspace AI daily budget reached");
+        await tx.query(
+          "INSERT INTO ai_runs(id,workspace_id,source_id,report_id,user_id,purpose,question,provider,model,status) VALUES($1,$2,$3,$4,$5,'email_refine',$6,$7,$8,'running')",
+          [
+            runId,
+            c.workspaceId,
+            s.id,
+            report.id,
+            c.userId,
+            v.instruction,
+            cfg.aiProvider,
+            cfg.aiModel,
+          ],
+        );
+      });
+      const docs = await approvedDocuments(db, c.workspaceId, s.id);
+      let result: any,
+        status = "completed";
+      try {
+        result = await refineEmailWithAI(
+          cfg,
+          v.email,
+          v.instruction,
+          docs,
+          evidenceOf(report, docs),
+        );
+      } catch (e) {
+        status = "failed";
+        result = { error: (e as Error).message.slice(0, 300) };
+      }
+      await db.tenant(c.workspaceId, (tx) =>
+        tx.query(
+          "UPDATE ai_runs SET status=$2,result=$3,usage=$4 WHERE id=$1",
+          [
+            runId,
+            status,
+            JSON.stringify(
+              status === "completed" ? { changes: result.changes } : result,
+            ),
+            JSON.stringify(result.usage || {}),
+          ],
+        ),
+      );
+      if (status !== "completed")
+        return res.json({
+          ok: false,
+          reason: `No change proposed: ${result.error}. Your email is unchanged.`,
+        });
+      res.json({
+        ok: true,
+        email: result.email,
+        changes: result.changes,
+        model: result.model,
+        rules: docs.some((d) => d.id === "client-rules"),
+      });
     }),
   );
   const draftOf = async (req: express.Request, write: boolean) => {

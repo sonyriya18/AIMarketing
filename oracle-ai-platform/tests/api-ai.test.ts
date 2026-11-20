@@ -176,3 +176,75 @@ describe("Ask AI tool boundary (A2)", () => {
     expect(JSON.stringify(rows.rows)).not.toContain("summary");
   });
 });
+
+describe("Eloqua Email Builder: Refine with AI", () => {
+  const email = {
+    subject: "Join our webinar",
+    preheader: "Learn what is new this season in one short session",
+    blocks: [
+      { type: "heading", text: "You are invited", url: "" },
+      { type: "text", text: "Join us for a short session.", url: "" },
+      {
+        type: "button",
+        text: "Register",
+        url: "https://example.test/register",
+      },
+    ],
+  };
+  it("returns a proposal for review without saving it, and keeps links", async () => {
+    http.mockResolvedValueOnce(
+      reply({
+        subject: "Save your seat",
+        preheader: "A short session on what is new this season",
+        blocks: [
+          { type: "heading", text: "Save your seat", url: "" },
+          { type: "text", text: "A short, friendly session.", url: "" },
+          {
+            type: "button",
+            text: "Register now",
+            url: "https://phishing.example/x",
+          },
+        ],
+        changes: ["Shorter subject", "Friendlier tone"],
+      }) as any,
+    );
+    const r = await post(`/sources/${s1}/email/refine`, {
+      reportId: r1,
+      instruction: "Make it friendlier",
+      email,
+    }).expect(200);
+    expect(r.body.ok).toBe(true);
+    expect(r.body.email.subject).toBe("Save your seat");
+    expect(r.body.changes).toEqual(["Shorter subject", "Friendlier tone"]);
+    // A new link from the AI is never accepted; the original address stays.
+    expect(r.body.email.blocks[2].url).toBe("https://example.test/register");
+    const drafts = await ag.get(`/api/sources/${s1}/drafts`).expect(200);
+    expect(drafts.body.some((d: any) => d.title === "Save your seat")).toBe(
+      false,
+    );
+  });
+  it("rejects invented numbers such as discounts and leaves the email unchanged", async () => {
+    http.mockResolvedValueOnce(
+      reply({
+        subject: "Get 30% off today",
+        preheader: email.preheader,
+        blocks: email.blocks,
+        changes: ["Added an offer"],
+      }) as any,
+    );
+    const r = await post(`/sources/${s1}/email/refine`, {
+      reportId: r1,
+      instruction: "Make it more exciting",
+      email,
+    }).expect(200);
+    expect(r.body.ok).toBe(false);
+    expect(r.body.reason).toMatch(/numbers that are not in your email/);
+  });
+  it("only works on an Eloqua source the person can edit, with its own report", async () => {
+    await post(`/sources/${s1}/email/refine`, {
+      reportId: r2,
+      instruction: "Shorter",
+      email,
+    }).expect(422);
+  });
+});

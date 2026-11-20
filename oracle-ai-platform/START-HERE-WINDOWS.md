@@ -5,7 +5,7 @@ One platform, four applications, one sign-in:
 | Application | What it is for |
 |---|---|
 | **Oracle Responsys** | Responsys Campaign Intelligence, unchanged (its own screens, calculations and AI). Opens inside the platform with the same sign-in, straight into the company's account. |
-| **Oracle Eloqua** | Campaigns, emails, nurture programs, forms, engagement, plus campaign and content recommendations. |
+| **Oracle Eloqua** | Campaigns, emails, nurture programs, forms, engagement, plus campaign and content recommendations. Email Builder with **Refine with AI**: ask for changes in your own words, review the proposal, then apply it. |
 | **Oracle Unity** | Customer profiles, data quality, audiences, identity links, consent, plus fix-it recommendations. |
 | **Oracle Infinity** | Website and app behaviour, journeys, conversions, drop-off, tracking quality, plus improvement recommendations. |
 

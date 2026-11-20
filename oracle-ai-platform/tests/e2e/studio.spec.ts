@@ -67,12 +67,29 @@ test("deep dives, head-to-head, flows and builders for all three tools", async (
   await page.getByRole("button", { name: "VS all" }).click();
   await expect(page.locator(".portfolio-table tbody tr")).toHaveCount(6);
   await main(page, /Email Builder/).click();
+  await expect(
+    page
+      .frameLocator('iframe[title^="Email preview"]')
+      .getByText("Save my seat"),
+  ).toBeVisible();
   await page.getByLabel("Subject line").fill("Your invitation is inside");
   await expect(
     page.locator(".inbox-head .subject").getByText("Your invitation is inside"),
   ).toBeVisible();
   await page.getByRole("button", { name: "Save as draft" }).click();
   await expect(page.getByText(/Saved as a draft/)).toBeVisible();
+  // Refine with AI: asks in your own words; without an AI key it says so and changes nothing.
+  const refine = page.getByRole("region", { name: "Refine with AI" });
+  await expect(refine).toBeVisible();
+  await refine
+    .getByLabel("What should change?")
+    .fill("Make the tone friendlier");
+  await refine.getByRole("button", { name: "Propose changes" }).click();
+  await expect(page.getByText(/AI editing is not configured/)).toBeVisible();
+  await expect(page.getByLabel("Subject line")).toHaveValue(
+    "Your invitation is inside",
+  );
+  await page.screenshot({ path: "test-results/eloqua-refine.png" });
 
   // Unity: audience deep dive, audience builder, customer profile, identity flow.
   await openWithSample(page, "Oracle Unity Customer Data Platform");
