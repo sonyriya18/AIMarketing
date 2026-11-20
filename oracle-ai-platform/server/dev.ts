@@ -1,12 +1,14 @@
 import { createServer } from "vite";
 import { config } from "./config";
 import { Database } from "./db";
+import { upgradeClientTemplates } from "./brand";
 import { createApp } from "./app";
 import { startWorker } from "./jobs";
 import { responsysRuntime, startResponsys } from "./responsys-gateway";
 const cfg = config(),
   db = new Database(cfg);
 await db.query("SELECT 1");
+await upgradeClientTemplates(db);
 const app = createApp(db, cfg);
 const vite = await createServer({
   server: { middlewareMode: true, hmr: { port: cfg.port + 10 } },

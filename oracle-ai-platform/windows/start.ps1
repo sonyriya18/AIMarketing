@@ -15,10 +15,24 @@ if (-not (Test-Path (Join-Path $platform '.env')) -or -not (Test-Path (Join-Path
   Write-Host 'Setup is not finished. Double-click 1-SETUP.cmd first.' -ForegroundColor Red
   Read-Host 'Press Enter to close'; exit 1
 }
-# Already running? Just open the browser.
-try { Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:3006/health/ready' -TimeoutSec 2 | Out-Null; Start-Process 'http://localhost:3006'; Write-Host 'Already running: opened http://localhost:3006'; exit 0 } catch {}
-# Stop an older copy from this folder that may still hold the ports.
+# Always start this copy fresh: stop whatever holds the platform ports (3006, and 3056 for
+# Responsys), including an older copy extracted to another folder, so the browser never shows an
+# old version.
+$ports = @(3006, 3056)
+$owners = @(Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Where-Object { $ports -contains $_.LocalPort } | Select-Object -ExpandProperty OwningProcess -Unique)
+foreach ($procId in $owners) {
+  $p = Get-Process -Id $procId -ErrorAction SilentlyContinue
+  if ($p -and $p.ProcessName -eq 'node') {
+    $where = if ($p.Path -like "$platform*") { 'this folder' } else { "another folder: $($p.Path)" }
+    Write-Host "Stopping a running copy of the platform ($where)..." -ForegroundColor Yellow
+    Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue
+  } elseif ($p) {
+    Write-Host "Port in use by $($p.ProcessName) (process $procId). Close that program, then run 2-START.cmd again." -ForegroundColor Red
+    Read-Host 'Press Enter to close'; exit 1
+  }
+}
 Get-Process node -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "$platform*" } | Stop-Process -Force -ErrorAction SilentlyContinue
+Start-Sleep -Seconds 1
 
 Write-Host ''
 Write-Host 'Starting Responsys, Eloqua, Unity and Infinity...' -ForegroundColor Green

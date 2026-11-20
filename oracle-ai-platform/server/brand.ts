@@ -145,3 +145,23 @@ export function clientDocuments(
     });
   return docs;
 }
+
+/**
+ * Companies created from the earlier "Endeavour Group – Dan Murphy's" template move to the current
+ * Endeavour Group template (Endeavour logo only). The client's own Oracle login addresses are kept.
+ * Runs at start; changes only branding that still carries that template marker.
+ */
+export async function upgradeClientTemplates(db: {
+  query: (sql: string, params?: unknown[]) => Promise<{ rows: any[] }>;
+}) {
+  const current = templateBrand("endeavour-group")!;
+  const { rows } = await db.query(
+    "SELECT id,brand FROM workspaces WHERE brand->>'template'='endeavour-danmurphys'",
+  );
+  for (const r of rows)
+    await db.query("UPDATE workspaces SET brand=$2 WHERE id=$1", [
+      r.id,
+      JSON.stringify({ ...current, appLinks: r.brand?.appLinks || {} }),
+    ]);
+  return rows.length;
+}

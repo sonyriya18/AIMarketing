@@ -2,11 +2,13 @@ import express from "express";
 import { resolve } from "node:path";
 import { config } from "./config";
 import { Database } from "./db";
+import { upgradeClientTemplates } from "./brand";
 import { createApp } from "./app";
 import { startWorker } from "./jobs";
 const cfg = config(),
   db = new Database(cfg);
 await db.query("SELECT 1");
+await upgradeClientTemplates(db);
 await db.assertProductionRole();
 const app = createApp(db, cfg);
 app.use(express.static(resolve("dist"), { index: false }));

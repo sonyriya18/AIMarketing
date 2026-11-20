@@ -205,3 +205,37 @@ describe("Responsys opens without its own setup screens", () => {
     expect(cookieHeader(undefined)).toBe("");
   });
 });
+
+describe("companies made from the earlier template", () => {
+  it("move to the Endeavour-only branding and keep their own login addresses", async () => {
+    const { upgradeClientTemplates } = await import("../server/brand");
+    const old = randomUUID();
+    await db.query(
+      "INSERT INTO workspaces(id,name,slug,brand) VALUES($1,'Endeavour Group',$2,$3)",
+      [
+        old,
+        "old-" + old.slice(0, 8),
+        JSON.stringify({
+          template: "endeavour-danmurphys",
+          displayName: "Endeavour Group – Dan Murphy's",
+          logos: {
+            primary: "/brand/endeavour-group.svg",
+            secondary: "/brand/danmurphys-logo.svg",
+          },
+          appLinks: { eloqua: "https://example.test/eloqua" },
+        }),
+      ],
+    );
+    expect(await upgradeClientTemplates(db)).toBe(1);
+    const { rows } = await db.query(
+      "SELECT brand FROM workspaces WHERE id=$1",
+      [old],
+    );
+    expect(rows[0].brand.displayName).toBe("Endeavour Group");
+    expect(rows[0].brand.logos.secondary).toBeUndefined();
+    expect(rows[0].brand.appLinks).toEqual({
+      eloqua: "https://example.test/eloqua",
+    });
+    expect(await upgradeClientTemplates(db)).toBe(0);
+  });
+});

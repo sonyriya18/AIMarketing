@@ -7,6 +7,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { config } from "./config";
 import { Database } from "./db";
+import { upgradeClientTemplates } from "./brand";
 import { createApp } from "./app";
 import { startWorker } from "./jobs";
 import { responsysRuntime, startResponsys } from "./responsys-gateway";
@@ -22,6 +23,7 @@ if (!existsSync(resolve(dist, "index.html"))) {
 const cfg = config(),
   db = new Database(cfg);
 await db.query("SELECT 1");
+await upgradeClientTemplates(db);
 const app = createApp(db, cfg);
 app.use(express.static(dist, { index: false }));
 app.get("*", (_req, res) => res.sendFile(resolve(dist, "index.html")));
