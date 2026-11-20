@@ -1,1 +1,1 @@
-Oracle AI Platform - release 2026-11-20b (Endeavour logo only; Responsys opens directly, no account screens)
+Oracle AI Platform - release 2026-11-20c (Endeavour logo only; Responsys opens directly; no account button; Oracle docs on the right)

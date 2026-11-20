@@ -128,7 +128,6 @@ export function NewCompanyForm({
     [slug, setSlug] = useState(""),
     [admin, setAdmin] = useState(defaultAdmin),
     [tools, setTools] = useState<Tool[]>([]),
-    [url, setUrl] = useState(""),
     [template, setTemplate] = useState(""),
     [busy, setBusy] = useState(false),
     [error, setError] = useState<unknown>(null);
@@ -145,14 +144,12 @@ export function NewCompanyForm({
             slug,
             adminEmail: admin,
             tools: payload(tools),
-            responsysUrl: url || null,
             ...(template ? { template } : {}),
           });
           setTemplate("");
           setName("");
           setSlug("");
           setTools([]);
-          setUrl("");
           await onCreated();
         } catch (err) {
           setError(err);
@@ -220,19 +217,6 @@ export function NewCompanyForm({
         </Field>
       </div>
       <ToolPicker value={tools} onChange={setTools} />
-      {tools.some((t) => t.app === "responsys" && t.enabled) && (
-        <Field
-          label="Responsys v17 address for this company (optional)"
-          hint="Leave empty to use the platform default (RESPONSYS_URL)"
-        >
-          <input
-            type="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="http://localhost:3000"
-          />
-        </Field>
-      )}
       <Button primary busy={busy}>
         <Building2 size={16} /> Create company
       </Button>
@@ -253,7 +237,6 @@ function CompanyRow({
   const [edit, setEdit] = useState(false),
     [branding, setBranding] = useState(false),
     [tools, setTools] = useState<Tool[]>(c.tools),
-    [url, setUrl] = useState(c.responsysUrl || ""),
     [admin, setAdmin] = useState(""),
     [check, setCheck] = useState<any>(null),
     [busy, setBusy] = useState(""),
@@ -341,17 +324,6 @@ function CompanyRow({
       {edit && (
         <div className="company-edit">
           <ToolPicker value={tools} onChange={setTools} />
-          <Field
-            label="Responsys v17 address"
-            hint="Empty = platform default (RESPONSYS_URL)"
-          >
-            <input
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="http://localhost:3000"
-            />
-          </Field>
           <div className="button-row">
             <Button
               primary
@@ -360,7 +332,7 @@ function CompanyRow({
                 run("save", async () => {
                   await api(
                     `/provider/companies/${c.id}`,
-                    { tools: payload(tools), responsysUrl: url || null },
+                    { tools: payload(tools) },
                     "PATCH",
                   );
                   setSaved("Subscription saved.");
@@ -496,7 +468,7 @@ export function ProviderConsole({
         title={`Companies (${data?.companies?.length ?? "…"})`}
         subtitle={
           data
-            ? `Responsys single sign-on: ${data.ssoConfigured ? "set up" : "not set up (Responsys opens with its own sign-in)"} · default Responsys address: ${data.responsysDefaultUrl || "not set"}`
+            ? "Each company sees only the applications ticked here. Responsys opens inside the platform with the same sign-in."
             : undefined
         }
       >

@@ -53,7 +53,7 @@ Before you start:
    - writes `RESPONSYS_URL` (v17's address) and the same secret (`RESPONSYS_SSO_SECRET`) into the platform's `.env`;
    - never prints the secret.
 2. Restart both apps: press **Ctrl+C** in each terminal, then run `npm run dev` in each folder.
-3. In the platform, open **Provider console** and make sure the company has **Oracle Responsys** ticked. Optionally set a company-specific Responsys address there. Use **Check Responsys v17** to confirm it is running with single sign-on.
+3. In the platform, open **Provider console** and make sure the company has **Oracle Responsys** ticked. Use **Check Responsys v17** to confirm it is running with single sign-on. (A company-specific Responsys address can still be set through the API, `PATCH /api/provider/companies/:id` with `responsysUrl`; the screen no longer shows this field.)
 4. Go to that company's home page and click **Oracle Responsys**.
 
 ## No separate login, no setup screens
@@ -64,6 +64,7 @@ When the platform runs Responsys itself, a person who opens Responsys lands stra
 2. **Members:** when a company administrator (Responsys owner) opens it, every company member whose access includes Responsys is added with the matching role (administrator → owner, analyst → analyst, viewer → viewer). Nobody is removed; people without access cannot sign in anyway.
 3. **Business account:** the company's account, created once from its branding (`responsysAccount`, timezone, currency, website). For Endeavour Group this is Responsys's own *Endeavour Group - DM* account, so its business context is unchanged.
 4. **Landing:** the browser is sent to `/?account=<id>&tab=briefing`.
+5. **Display:** pages shown inside the platform get one display rule (`EMBED_CSS` in `server/responsys-gateway.ts`) that hides Responsys's own account button at the top right, because the platform already chose the company and account. No Responsys file is changed.
 
 Every step is best-effort and never changes Responsys code or writes to its database directly. If a step cannot be done (for example a member not yet added), Responsys shows its own screen for that step.
 

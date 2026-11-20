@@ -356,6 +356,21 @@ export function framable(
 }
 
 /**
+ * Display rules for Responsys inside the platform. The company and its business account are
+ * already chosen by the platform, so Responsys's own account button (top-right logo, which opens
+ * its account chooser) is hidden. Only presentation changes; no Responsys file is modified.
+ */
+export const EMBED_CSS =
+  '[data-testid="account-brand"]{display:none!important}';
+export function embedStyle(html: string) {
+  if (html.includes('id="platform-embed"')) return html;
+  const tag = `<style id="platform-embed">${EMBED_CSS}</style>`;
+  return /<\/head>/i.test(html)
+    ? html.replace(/<\/head>/i, tag + "</head>")
+    : tag + html;
+}
+
+/**
  * Forwards requests for responsys.<host>:<port> to v17 unchanged (method, path, headers, body and
  * streaming responses). Must run before any body parser.
  */
@@ -384,7 +399,10 @@ export function responsysGateway(
           port: cfg.responsysInternalPort,
           method: req.method,
           path: req.originalUrl,
-          headers: req.headers,
+          // Pages are requested uncompressed so the display rules can be added.
+          headers: /text\/html/i.test(String(req.headers.accept || ""))
+            ? { ...req.headers, "accept-encoding": "identity" }
+            : req.headers,
         },
         async (r) => {
           const cookie = cookieHeader(r.headers["set-cookie"]);
@@ -406,6 +424,22 @@ export function responsysGateway(
             }
           }
           if (res.headersSent || res.destroyed) return r.resume();
+          // Responsys pages shown inside the platform get the platform's display rules.
+          if (
+            /^text\/html/i.test(String(r.headers["content-type"] || "")) &&
+            !r.headers["content-encoding"]
+          ) {
+            const chunks: Buffer[] = [];
+            r.on("data", (c: Buffer) => chunks.push(c));
+            r.on("end", () => {
+              const html = embedStyle(Buffer.concat(chunks).toString("utf8"));
+              const headers = framable(r.headers, cfg.origin);
+              headers["content-length"] = Buffer.byteLength(html);
+              res.writeHead(r.statusCode || 200, headers);
+              res.end(html);
+            });
+            return;
+          }
           res.writeHead(r.statusCode || 502, framable(r.headers, cfg.origin));
           r.pipe(res);
         },

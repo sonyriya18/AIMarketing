@@ -108,3 +108,20 @@ describe("supplied Responsys release", () => {
     expect(JSON.stringify(env)).not.toMatch(/never/);
   });
 });
+
+describe("Responsys inside the platform", () => {
+  it("hides only Responsys's own account button, once", async () => {
+    const { embedStyle, EMBED_CSS } =
+      await import("../server/responsys-gateway");
+    const out = embedStyle(
+      "<html><head><title>x</title></head><body></body></html>",
+    );
+    expect(out).toContain(
+      `<style id="platform-embed">${EMBED_CSS}</style></head>`,
+    );
+    expect(embedStyle(out)).toBe(out);
+    expect(EMBED_CSS).toBe(
+      '[data-testid="account-brand"]{display:none!important}',
+    );
+  });
+});

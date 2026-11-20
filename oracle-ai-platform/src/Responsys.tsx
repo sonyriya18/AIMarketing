@@ -79,7 +79,10 @@ export function ResponsysFrame({
             ))}
           </select>
         </div>
-        <nav className="context-actions" aria-label="Responsys tools">
+        <nav
+          className="context-actions responsys-tools"
+          aria-label="Responsys tools"
+        >
           <Button onClick={() => setN((x) => x + 1)}>
             <RefreshCw size={15} /> Reload Responsys
           </Button>
