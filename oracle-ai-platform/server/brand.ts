@@ -82,6 +82,8 @@ export const brandSchema = z
       .string()
       .regex(/^[A-Z]{3}$/)
       .optional(),
+    responsysAccount: z.string().trim().max(120).optional(),
+    responsysWebsite: optionalUrl,
   })
   .strict();
 

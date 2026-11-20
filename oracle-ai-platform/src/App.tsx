@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { BrandLogos } from "./Brand";
+import { BrandLogos, DocsLink } from "./Brand";
 import {
   ArrowRight,
   Bell,
@@ -189,9 +189,14 @@ export default function App() {
           }}
           aria-label="Company home"
         >
-          <BrandLogos brand={session.workspace.brand} fallback={session.workspace.logo} />
+          <BrandLogos
+            brand={session.workspace.brand}
+            fallback={session.workspace.logo}
+          />
           <div>
-            <strong>{session.workspace.brand?.displayName || session.workspace.name}</strong>
+            <strong>
+              {session.workspace.brand?.displayName || session.workspace.name}
+            </strong>
             <small>Oracle AI Assessment Platform</small>
           </div>
         </button>
@@ -538,17 +543,6 @@ function Application({
           ))}
         </nav>
       </div>
-      {session.workspace?.brand?.guardrails?.length || session.workspace?.brand?.displayName ? (
-        <div className="client-strip" aria-label="Client context">
-          <b>{session.workspace.brand?.displayName || session.workspace.name}</b>
-          {session.workspace.brand?.sector === "liquor_retail" && <span>Liquor retail</span>}
-          {session.workspace.brand?.guardrails?.length ? (
-            <span title={session.workspace.brand.guardrails.join("\n")}>
-              AI follows {session.workspace.brand.guardrails.length} client marketing rule(s): {session.workspace.brand.guardrails[0]}
-            </span>
-          ) : null}
-        </div>
-      ) : null}
       <div className="contextbar">
         <div className="source-pickers">
           <Field label="Source account / environment">
@@ -594,6 +588,7 @@ function Application({
               <t.icon size={15} /> {t.label}
             </Button>
           ))}
+          <DocsLink app={app} />
           {session.workspace?.role === "owner" && (
             <Button onClick={() => setTab("settings")} aria-label="Settings">
               <SettingsIcon size={16} />

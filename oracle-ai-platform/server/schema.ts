@@ -28,11 +28,14 @@ CREATE TABLE IF NOT EXISTS schema_version(version int PRIMARY KEY, applied_at ti
 INSERT INTO schema_version(version) VALUES(2) ON CONFLICT DO NOTHING;
 INSERT INTO schema_version(version) VALUES(3) ON CONFLICT DO NOTHING;
 INSERT INTO schema_version(version) VALUES(4) ON CONFLICT DO NOTHING;
+INSERT INTO schema_version(version) VALUES(5) ON CONFLICT DO NOTHING;
 CREATE TABLE IF NOT EXISTS users(id text PRIMARY KEY,email text UNIQUE NOT NULL,issuer text,subject text,created_at timestamptz NOT NULL DEFAULT now(),UNIQUE(issuer,subject));
 CREATE TABLE IF NOT EXISTS workspaces(id text PRIMARY KEY,name text NOT NULL,slug text UNIQUE NOT NULL,logo text,created_at timestamptz DEFAULT now());
 ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'active' CHECK(status IN('active','suspended'));
 ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS responsys_url text;
 ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS brand jsonb NOT NULL DEFAULT '{}'::jsonb;
+ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS responsys_workspace_id text;
+ALTER TABLE workspaces ADD COLUMN IF NOT EXISTS responsys_account_id text;
 CREATE TABLE IF NOT EXISTS platform_admins(user_id text PRIMARY KEY REFERENCES users(id),created_at timestamptz NOT NULL DEFAULT now());
 CREATE TABLE IF NOT EXISTS memberships(workspace_id text NOT NULL REFERENCES workspaces(id),user_id text NOT NULL REFERENCES users(id),role text NOT NULL CHECK(role IN('owner','analyst','viewer')),apps jsonb NOT NULL DEFAULT '[]',permissions jsonb NOT NULL DEFAULT '[]',PRIMARY KEY(workspace_id,user_id));
 CREATE TABLE IF NOT EXISTS entitlements(workspace_id text NOT NULL REFERENCES workspaces(id),app text NOT NULL CHECK(app IN('responsys','eloqua','unity','infinity')),enabled boolean NOT NULL DEFAULT true,starts_at timestamptz,ends_at timestamptz,PRIMARY KEY(workspace_id,app));

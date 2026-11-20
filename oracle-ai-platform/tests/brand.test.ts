@@ -10,17 +10,20 @@ import { responsysEnv, responsysLayout } from "../server/responsys-gateway";
 import { config } from "../server/config";
 
 describe("client branding", () => {
-  it("accepts the Endeavour Group – Dan Murphy's template", () => {
-    const b = templateBrand("endeavour-danmurphys")!;
-    expect(parseBrand(b).displayName).toBe("Endeavour Group – Dan Murphy's");
-    expect(b.website).toBe("https://www.danmurphys.com.au/dm/home");
+  it("accepts the Endeavour Group template (Endeavour logo only)", () => {
+    const b = templateBrand("endeavour-group")!;
+    expect(parseBrand(b).displayName).toBe("Endeavour Group");
+    expect(b.website).toBe("https://www.endeavourgroup.com.au/");
+    expect(b.logos).toEqual({
+      primary: "/brand/endeavour-group.svg",
+      onDark: "/brand/endeavour-group-white.svg",
+    });
+    expect(b.responsysAccount).toBe("Endeavour Group - DM");
     expect(b.facts?.every((f) => f.source.startsWith("https://"))).toBe(true);
     expect(b.guardrails?.join(" ")).toMatch(/18\+/);
   });
-  it("offers only Endeavour Group – Dan Murphy's as a client template", () => {
-    expect(CLIENT_TEMPLATES.map((t) => t.key)).toEqual([
-      "endeavour-danmurphys",
-    ]);
+  it("offers only Endeavour Group as a client template", () => {
+    expect(CLIENT_TEMPLATES.map((t) => t.key)).toEqual(["endeavour-group"]);
   });
   it("rejects unsafe links, logos and unknown fields", () => {
     expect(() => parseBrand({ website: "http://example.com" })).toThrow(
@@ -45,7 +48,7 @@ describe("client branding", () => {
   it("gives the AI a business profile and binding marketing rules", () => {
     const docs = clientDocuments(
       "Endeavour Group",
-      templateBrand("endeavour-danmurphys"),
+      templateBrand("endeavour-group"),
     );
     expect(docs.map((d) => d.id)).toEqual(["client-profile", "client-rules"]);
     expect(docs[0].content).toMatch(/not campaign results/);

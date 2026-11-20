@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { api } from "./api";
 import { Button, ErrorBox } from "./ui";
+import { DocsLink } from "./Brand";
 import { product, type ProductId, type Session } from "../shared/catalog";
 
 export interface ResponsysStatus {
@@ -13,6 +14,7 @@ export interface ResponsysStatus {
   signIn: string;
   ai: string;
   opens: string;
+  account?: string | null;
 }
 
 export function useResponsysStatus(enabled: boolean) {
@@ -81,6 +83,7 @@ export function ResponsysFrame({
           <Button onClick={() => setN((x) => x + 1)}>
             <RefreshCw size={15} /> Reload Responsys
           </Button>
+          <DocsLink app="responsys" />
         </nav>
       </div>
       <ErrorBox error={error} />

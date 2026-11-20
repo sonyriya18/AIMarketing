@@ -1,181 +1,64 @@
-// Client branding on screen: logos, official websites, context facts, marketing rules, the
-// client's own Oracle application links and Oracle documentation. Configured per company by the
-// platform provider (Provider console → Branding & links).
+// Client branding on screen: the client's logo in the header, Oracle documentation links, and the
+// provider's editor for logos, websites, context facts, marketing rules and the client's own
+// Oracle login addresses (Provider console → Branding & links).
 import React, { useState } from "react";
-import {
-  BookOpen,
-  ExternalLink,
-  Globe,
-  ShieldCheck,
-  Sparkles,
-} from "lucide-react";
+import { BookOpen, ExternalLink } from "lucide-react";
 import { Button, ErrorBox, Field } from "./ui";
 import { product, type ProductId } from "../shared/catalog";
 import {
   BUNDLED_LOGOS,
   CLIENT_TEMPLATES,
   PRODUCT_DOCS,
-  SECTOR_LABEL,
   type Brand,
 } from "../shared/clients";
 
 const safe = (url?: string) =>
   url && /^https:\/\//.test(url) ? url : undefined;
 
-/** Header logos: the client's main logo and, when set, its retail brand. */
+/** Header logo: the client's own logo (the white version on the dark header when there is one). */
 export function BrandLogos({
   brand,
   fallback,
+  light,
 }: {
   brand?: Brand;
   fallback?: string | null;
+  /** On a light background: always the main logo. */
+  light?: boolean;
 }) {
-  const logos = [brand?.logos?.primary, brand?.logos?.secondary].filter(
-    Boolean,
-  ) as string[];
-  if (!logos.length && fallback) return <img src={fallback} alt="" />;
-  if (!logos.length) return <span className="brandmark">AI</span>;
-  return (
-    <span className="brand-logos">
-      {logos.map((src, i) => (
-        <img
-          key={src}
-          src={src}
-          alt={
-            i === 0 ? `${brand?.displayName || "Client"} logo` : "Brand logo"
-          }
-        />
-      ))}
-    </span>
-  );
+  const name = brand?.displayName || "Client";
+  if (brand?.logos?.onDark && !light)
+    return (
+      <img
+        className="brand-logo-dark"
+        src={brand.logos.onDark}
+        alt={`${name} logo`}
+      />
+    );
+  if (brand?.logos?.primary)
+    return (
+      <span className="brand-logos">
+        <img src={brand.logos.primary} alt={`${name} logo`} />
+      </span>
+    );
+  if (fallback) return <img src={fallback} alt="" />;
+  return <span className="brandmark">AI</span>;
 }
 
-/** Home-page client panel. Only links for the company's subscribed applications are shown. */
-export function ClientPanel({
-  brand,
-  products,
-  name,
-}: {
-  brand?: Brand;
-  products: ProductId[];
-  name: string;
-}) {
-  if (!brand || !Object.keys(brand).length) return null;
-  const links = (brand.links || []).filter((l) => safe(l.url));
+/** Link to the product's official Oracle documentation, shown in each application's toolbar. */
+export function DocsLink({ app }: { app: ProductId }) {
+  const doc = PRODUCT_DOCS[app]?.[0];
+  if (!doc) return null;
   return (
-    <section
-      className="client-panel"
-      style={{ borderTopColor: brand.color || undefined }}
-      aria-label="Client profile"
+    <a
+      className="docs-link"
+      href={doc.url}
+      target="_blank"
+      rel="noreferrer"
+      title={doc.label}
     >
-      <div className="client-head">
-        <div className="client-logos">
-          {brand.logos?.primary && (
-            <img src={brand.logos.primary} alt={`${name} logo`} />
-          )}
-          {brand.logos?.secondary && (
-            <img src={brand.logos.secondary} alt="Retail brand logo" />
-          )}
-        </div>
-        <div>
-          <h2>{brand.displayName || name}</h2>
-          {brand.summary && <p>{brand.summary}</p>}
-          <div className="chips">
-            {brand.sector && (
-              <span className="chip">{SECTOR_LABEL[brand.sector]}</span>
-            )}
-            {brand.timezone && <span className="chip">{brand.timezone}</span>}
-            {brand.currency && <span className="chip">{brand.currency}</span>}
-            {links.map((l) => (
-              <a
-                key={l.url}
-                className="chip link-chip"
-                href={l.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Globe size={12} /> {l.label} <ExternalLink size={11} />
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="client-grid">
-        {!!brand.facts?.length && (
-          <div>
-            <h3>
-              <Sparkles size={15} /> What the AI knows about this client
-            </h3>
-            <ul className="facts">
-              {brand.facts.map((f) => (
-                <li key={f.id}>
-                  <span className="mono">{f.id}</span> {f.text}{" "}
-                  <a
-                    href={f.source}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="muted"
-                  >
-                    source
-                  </a>
-                </li>
-              ))}
-            </ul>
-            {brand.researchedOn && (
-              <small className="muted">
-                Read from the official websites on {brand.researchedOn}. Context
-                only, never campaign results.
-              </small>
-            )}
-          </div>
-        )}
-        {!!brand.guardrails?.length && (
-          <div>
-            <h3>
-              <ShieldCheck size={15} /> Marketing rules applied by the AI
-            </h3>
-            <ul className="facts">
-              {brand.guardrails.map((g, i) => (
-                <li key={i}>{g}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <div>
-          <h3>
-            <BookOpen size={15} /> Applications and documentation
-          </h3>
-          <ul className="facts">
-            {products.map((p) => {
-              const app = safe(brand.appLinks?.[p]);
-              return (
-                <li key={p}>
-                  <b>{product(p).name}</b>:{" "}
-                  {app ? (
-                    <a href={app} target="_blank" rel="noreferrer">
-                      open {product(p).short} <ExternalLink size={11} />
-                    </a>
-                  ) : (
-                    <span className="muted">
-                      client login address not configured
-                    </span>
-                  )}
-                  {PRODUCT_DOCS[p].map((d) => (
-                    <span key={d.url}>
-                      {" "}
-                      ·{" "}
-                      <a href={d.url} target="_blank" rel="noreferrer">
-                        {d.label}
-                      </a>
-                    </span>
-                  ))}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
-    </section>
+      <BookOpen size={15} /> Oracle docs <ExternalLink size={11} />
+    </a>
   );
 }
 

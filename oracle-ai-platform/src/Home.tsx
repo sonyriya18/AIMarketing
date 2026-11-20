@@ -28,7 +28,6 @@ import {
 } from "../shared/catalog";
 import { SettingsPage } from "./DataAdmin";
 import { NewCompanyForm } from "./Provider";
-import { ClientPanel } from "./Brand";
 
 export interface Intent {
   tab?: Tab;
@@ -125,7 +124,11 @@ export function Login({ onDone }: { onDone: () => Promise<void> }) {
       </div>
       <div className="login">
         {step === 2 && (brand?.brandLogo || brand?.logo) ? (
-          <img className="login-logo" src={brand.brandLogo || brand.logo} alt="" />
+          <img
+            className="login-logo"
+            src={brand.brandLogo || brand.logo}
+            alt=""
+          />
         ) : (
           <span className="brandmark">AI</span>
         )}
@@ -445,7 +448,6 @@ export function Home({
           </form>
         )}
       </section>
-      <ClientPanel brand={session.workspace!.brand} products={session.products} name={session.workspace!.name} />
       <ErrorBox error={error} />
       {analytic.length > 0 && (
         <div className="home-grid">
@@ -611,12 +613,12 @@ export function Home({
                 <dl className="card-stats">
                   <dt>Status</dt>
                   <dd>{responsysState(rStatus)}</dd>
-                  <dt>Sign-in</dt>
-                  <dd>{rStatus?.signIn || "—"}</dd>
+                  <dt>Business account</dt>
+                  <dd>{rStatus?.account || "Set up when first opened"}</dd>
                   <dt>AI</dt>
                   <dd>{rStatus?.ai || "—"}</dd>
-                  <dt>Opens</dt>
-                  <dd>{rStatus?.opens || "—"}</dd>
+                  <dt>Connection</dt>
+                  <dd>Uploads or Responsys API</dd>
                 </dl>
               ) : (
                 <dl className="card-stats">
@@ -638,8 +640,7 @@ export function Home({
                 </dl>
               )}
               <span className="product-open">
-                {id === "responsys" ? "Open Responsys" : "Open workspace"}{" "}
-                <ArrowRight size={16} />
+                Open workspace <ArrowRight size={16} />
               </span>
             </button>
           );

@@ -10,7 +10,19 @@ import type express from "express";
 import dotenv from "dotenv";
 import pg from "pg";
 import type { Config } from "./config";
-import { LOCAL_SUBJECT_PREFIX, SSO_CLIENT_ID, issuerOf } from "./sso";
+import {
+  LOCAL_SUBJECT_PREFIX,
+  RESPONSYS_CALLBACK,
+  SSO_CLIENT_ID,
+  issuerOf,
+} from "./sso";
+import type { Database } from "./db";
+import {
+  cookieHeader,
+  landingFor,
+  peekSsoCode,
+  prepareResponsys,
+} from "./responsys-link";
 
 // Operating-system variables v17 may need. Platform database and session secrets are never
 // passed: v17 reads its own from its .env.local. The only shared setting is the AI key (Gemini or
@@ -105,7 +117,8 @@ export function responsysLayout(dir: string) {
     existsSync(join(dir, "dist", "index.html")) &&
     existsSync(join(dir, "server", "index.ts"));
   return {
-    portableDatabase: existsSync(pgCtl) && existsSync(join(pgData, "PG_VERSION")),
+    portableDatabase:
+      existsSync(pgCtl) && existsSync(join(pgData, "PG_VERSION")),
     pgCtl,
     pgData,
     pgLog: join(dir, ".local", "postgres.log"),
@@ -119,10 +132,18 @@ export function responsysLayout(dir: string) {
 export function ensureResponsysDatabase(dir: string): string | null {
   const l = responsysLayout(dir);
   if (!l.portableDatabase) return null;
-  const status = spawnSync(l.pgCtl, ["-D", l.pgData, "status"], { windowsHide: true });
+  const status = spawnSync(l.pgCtl, ["-D", l.pgData, "status"], {
+    windowsHide: true,
+  });
   if (status.status === 0) return null;
-  const start = spawnSync(l.pgCtl, ["-D", l.pgData, "-l", l.pgLog, "-w", "start"], { windowsHide: true, timeout: 60_000 });
-  return start.status === 0 ? null : "The Responsys database could not start. Look at responsys\\.local\\postgres.log, or double-click 1-SETUP.cmd again.";
+  const start = spawnSync(
+    l.pgCtl,
+    ["-D", l.pgData, "-l", l.pgLog, "-w", "start"],
+    { windowsHide: true, timeout: 60_000 },
+  );
+  return start.status === 0
+    ? null
+    : "The Responsys database could not start. Look at responsys\\.local\\postgres.log, or double-click 1-SETUP.cmd again.";
 }
 
 /**
@@ -240,12 +261,18 @@ export function startResponsys(cfg: Config): ResponsysProcess {
   // A Responsys left running by an earlier start (e.g. the window was closed abruptly) is reused
   // instead of failing with "port already in use".
   const probe = http.get(
-    { host: "127.0.0.1", port: cfg.responsysInternalPort, path: "/api/health/ready", timeout: 1500 },
+    {
+      host: "127.0.0.1",
+      port: cfg.responsysInternalPort,
+      path: "/api/health/ready",
+      timeout: 1500,
+    },
     (res) => {
       res.resume();
       if (res.statusCode === 200) {
         status.state = "running";
-        status.message = "Responsys is running (reused the copy that was already started)";
+        status.message =
+          "Responsys is running (reused the copy that was already started)";
         console.log("[responsys] " + status.message);
       } else run();
     },
@@ -335,28 +362,60 @@ export function framable(
 export function responsysGateway(
   cfg: Config,
   status: () => ResponsysProcess | null,
+  db?: Database,
 ): express.RequestHandler {
   const host = cfg.responsysHost.toLowerCase();
   return (req, res, next) => {
     if ((req.headers.host || "").toLowerCase() !== host) return next();
-    const up = http.request(
-      {
-        host: "127.0.0.1",
-        port: cfg.responsysInternalPort,
-        method: req.method,
-        path: req.originalUrl,
-        headers: req.headers,
-      },
-      (r) => {
-        res.writeHead(r.statusCode || 502, framable(r.headers, cfg.origin));
-        r.pipe(res);
-      },
-    );
-    up.on("error", () => {
-      if (!res.headersSent) unavailable(res, status());
-      else res.end();
+    // Sign-in return from the platform: note who signed in (before Responsys redeems the code),
+    // so their Responsys workspace and account can be prepared and they land straight in it.
+    const signIn =
+      db && req.method === "GET" && req.path === RESPONSYS_CALLBACK
+        ? String(req.query.code || "")
+        : "";
+    void (
+      signIn
+        ? peekSsoCode(db!, signIn).catch(() => null)
+        : Promise.resolve(null)
+    ).then((who) => {
+      const up = http.request(
+        {
+          host: "127.0.0.1",
+          port: cfg.responsysInternalPort,
+          method: req.method,
+          path: req.originalUrl,
+          headers: req.headers,
+        },
+        async (r) => {
+          const cookie = cookieHeader(r.headers["set-cookie"]);
+          if (
+            who &&
+            db &&
+            cookie &&
+            (r.statusCode || 0) >= 300 &&
+            (r.statusCode || 0) < 400
+          ) {
+            try {
+              const link = await prepareResponsys(db, cfg, who, cookie);
+              r.headers.location = landingFor(r.headers.location, link);
+              if (link.note) console.warn(`[responsys] ${link.note}`);
+            } catch (e) {
+              console.warn(
+                `[responsys] automatic setup skipped: ${(e as Error).message}`,
+              );
+            }
+          }
+          if (res.headersSent || res.destroyed) return r.resume();
+          res.writeHead(r.statusCode || 502, framable(r.headers, cfg.origin));
+          r.pipe(res);
+        },
+      );
+      up.on("error", () => {
+        if (!res.headersSent) unavailable(res, status());
+        else res.end();
+      });
+      req.pipe(up);
+      res.on("close", () => up.destroy());
     });
-    req.pipe(up);
-    res.on("close", () => up.destroy());
   };
 }

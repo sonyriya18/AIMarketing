@@ -7,7 +7,7 @@ Responsys is the 4th tool in the platform. It is your **unchanged v17 applicatio
 
 No v17 code is changed. Only v17's local settings file (`.env.local`) is switched from its own email sign-in to "sign in with the platform". A backup is kept.
 
-> **Current release (Windows package).** The `responsys/` folder is now the TL's Windows release (`AIMarketing-Claude-Upload.zip` with `AIMarketing-Dependencies-Part01`–`Part07`), byte-for-byte unchanged (`node preservation/verify-responsys.mjs` checks 186 files). It brings its own Node.js 24 (`responsys\runtime\node`) and PostgreSQL 16 (`responsys\runtime\pgsql`). `1-SETUP.cmd` runs its own `Setup.ps1` once to create its private database in `responsys\.local`. When the platform starts, it starts that database and runs Responsys the same way its `Start.ps1` does (`server/index.ts` with the prebuilt screens), with the platform's sign-in and ChatGPT settings passed in as environment variables. Nothing needs to be installed on the PC. See `START-HERE-WINDOWS.md`.
+> **Current release (Windows package).** The `responsys/` folder is now the supplied Responsys Windows release (`AIMarketing-Claude-Upload.zip` with `AIMarketing-Dependencies-Part01`–`Part07`), byte-for-byte unchanged (`node preservation/verify-responsys.mjs` checks 186 files). It brings its own Node.js 24 (`responsys\runtime\node`) and PostgreSQL 16 (`responsys\runtime\pgsql`). `1-SETUP.cmd` runs its own `Setup.ps1` once to create its private database in `responsys\.local`. When the platform starts, it starts that database and runs Responsys the same way its `Start.ps1` does (`server/index.ts` with the prebuilt screens), with the platform's sign-in and ChatGPT settings passed in as environment variables. Nothing needs to be installed on the PC. See `START-HERE-WINDOWS.md`.
 
 ## Easiest: one port (3006), one login
 Set `RESPONSYS_DIR=<your v17 folder>` in the platform's `.env`, then run `npm run dev`. The platform:
@@ -56,7 +56,16 @@ Before you start:
 3. In the platform, open **Provider console** and make sure the company has **Oracle Responsys** ticked. Optionally set a company-specific Responsys address there. Use **Check Responsys v17** to confirm it is running with single sign-on.
 4. Go to that company's home page and click **Oracle Responsys**.
 
-The first time, v17 shows its own "Create your workspace" screen. That is v17's normal first run: its campaign data lives in v17's own workspace.
+## No separate login, no setup screens
+
+When the platform runs Responsys itself, a person who opens Responsys lands straight on their company's account Summary. Right after single sign-on, the platform prepares their Responsys session through Responsys's **own public API, acting as that person** (their session and CSRF token), exactly as if they had clicked the same buttons (`server/responsys-link.ts`):
+
+1. **Workspace:** the company's Responsys workspace, created once and named after the company, then reused (its id is stored on the platform company). An existing workspace of the same name that the person owns is reused.
+2. **Members:** when a company administrator (Responsys owner) opens it, every company member whose access includes Responsys is added with the matching role (administrator → owner, analyst → analyst, viewer → viewer). Nobody is removed; people without access cannot sign in anyway.
+3. **Business account:** the company's account, created once from its branding (`responsysAccount`, timezone, currency, website). For Endeavour Group this is Responsys's own *Endeavour Group - DM* account, so its business context is unchanged.
+4. **Landing:** the browser is sent to `/?account=<id>&tab=briefing`.
+
+Every step is best-effort and never changes Responsys code or writes to its database directly. If a step cannot be done (for example a member not yet added), Responsys shows its own screen for that step.
 
 **To undo**, run the same command with `--undo` at the end. It restores v17's previous settings and turns platform single sign-on off.
 
@@ -80,5 +89,5 @@ The first time, v17 shows its own "Create your workspace" screen. That is v17's 
 |---|---|
 | Contract test (`tests/sso.test.ts`) | Passes. Uses `openid-client` 6.8.8, the same library and version as v17, exactly as v17 calls it. Covers discovery, sign-in, one-time code, wrong secret, wrong PKCE verifier, unsubscribed company, unregistered address, signed-out user, and a subscription removed mid-sign-in. |
 | Live local test with the real, unmodified v17 | Passes (v17 on PostgreSQL 16, platform on embedded PostgreSQL). A company with Responsys opened v17 signed in as the platform user; a company without it was refused. |
-| Live local test with the TL's Windows release (unchanged) | Passes on Linux with the same code: the platform started it, signed in through `/sso`, and it showed its own first-run "Create your workspace" screen inside the platform. The Windows `.exe` runtime itself was not run here (no Windows machine in the test environment). |
+| Live local test with the supplied Windows release (unchanged) | Passes on Linux with the same code: the platform started it, signed in through `/sso`, and the owner and an analyst of the same company both landed straight on the *Endeavour Group - DM* Summary with no setup screens. The Windows `.exe` runtime itself was not run here (no Windows machine in the test environment). |
 | Deployed or production test | Not done. |

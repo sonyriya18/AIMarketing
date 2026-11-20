@@ -4,12 +4,12 @@ One platform, four applications, one sign-in:
 
 | Application | What it is for |
 |---|---|
-| **Oracle Responsys** | Your TL's Responsys Campaign Intelligence release, unchanged (its own screens, calculations and AI). |
+| **Oracle Responsys** | Responsys Campaign Intelligence, unchanged (its own screens, calculations and AI). Opens inside the platform with the same sign-in, straight into the company's account. |
 | **Oracle Eloqua** | Campaigns, emails, nurture programs, forms, engagement, plus campaign and content recommendations. |
 | **Oracle Unity** | Customer profiles, data quality, audiences, identity links, consent, plus fix-it recommendations. |
 | **Oracle Infinity** | Website and app behaviour, journeys, conversions, drop-off, tracking quality, plus improvement recommendations. |
 
-Client included as a template: **Endeavour Group – Dan Murphy's** (logos, official websites, facts with sources, alcohol-marketing rules).
+Client included as a template: **Endeavour Group** (logo in the header, official website, facts with sources, alcohol-marketing rules the AI follows).
 
 ---
 
@@ -44,13 +44,13 @@ The key is saved only in the platform `.env`. Responsys receives the same key wh
 
 1. Sign in with your work email. Locally the first person to sign in becomes the **platform administrator**.
 2. Open **Provider console**, then **Add a client company**:
-   - **Client template:** choose *Endeavour Group – Dan Murphy's*. This fills in the name, logos, websites, facts and rules.
+   - **Client template:** choose *Endeavour Group*. This fills in the name, logo, website, facts and rules.
    - Tick the applications this client subscribes to, then click **Create company**.
 3. Use **Branding & links** on the company to change logos, colours, websites or rules, or to add the client's own Oracle login addresses.
 4. Use **Workspace settings** to add members. For each person choose a role (viewer, analyst or administrator) and which applications they may open. People see only the applications that are both in the company's subscription and in their own list.
 5. Open an application:
    - **Eloqua, Unity, Infinity:** go to **Data & connections**, add a source account, and upload exports (examples are in `examples\`). Then use Summary, Analyze, Compare, AI Simulator, Ask AI, the builders, drafts, reports and follow-up.
-   - **Responsys:** the first time, it shows its own "Create your workspace" screen. Then use **Summary, Manage connection** with `responsys\config\responsys-credentials.json` (see `responsys\INSTALL-WINDOWS.txt`).
+   - **Responsys:** opens like the others, with no separate login and no setup screens: the platform signs you in and prepares the company's Responsys workspace and business account (*Endeavour Group - DM*) automatically. Members with Responsys access are added when a company administrator opens Responsys (so an administrator opens it once after adding members). For live data use **Data & connections / Manage connection** with `responsys\config\responsys-credentials.json` (see `responsys\INSTALL-WINDOWS.txt`).
 
 ## 5. Check ChatGPT: double-click `3-CHECK-AI.cmd`
 

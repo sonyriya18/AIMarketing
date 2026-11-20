@@ -84,7 +84,7 @@ export function createApp(db: Database, cfg: Config) {
   app.disable("x-powered-by");
   // responsys.<host>:<port> is the unmodified Responsys v17 app (same port, platform sign-in).
   if (cfg.responsysDir)
-    app.use(responsysGateway(cfg, () => responsysRuntime.current));
+    app.use(responsysGateway(cfg, () => responsysRuntime.current, db));
   if (cfg.trustProxyHops) app.set("trust proxy", cfg.trustProxyHops);
   app.use(
     helmet({
@@ -408,6 +408,15 @@ export function createApp(db: Database, cfg: Config) {
             ? `${cfg.aiProvider === "gemini" ? "Gemini" : "ChatGPT"} · ${cfg.aiModel}`
             : "Rule-based (no AI key)",
         opens: cfg.responsysDir ? "Inside the platform" : "In this window",
+        // The company's Responsys business account, prepared automatically on first open.
+        account: await db
+          .query(
+            `SELECT brand->>'responsysAccount' AS a,brand->>'displayName' AS d,name,responsys_account_id AS id FROM workspaces WHERE id=$1`,
+            [c.workspaceId],
+          )
+          .then(({ rows }) =>
+            rows[0]?.id ? rows[0].a || rows[0].d || rows[0].name : null,
+          ),
       });
     }),
   );

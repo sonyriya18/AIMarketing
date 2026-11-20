@@ -73,7 +73,7 @@ test("each client company sees only its own applications", async ({ page }) => {
   );
 });
 
-test("a client template brings logos, websites, rules and documentation links", async ({
+test("a client template brings the logo, rules and documentation links", async ({
   page,
 }) => {
   await page.goto("/");
@@ -87,7 +87,7 @@ test("a client template brings logos, websites, rules and documentation links", 
   if (!(await template.isVisible())) await consoleButton.click();
   await page
     .getByLabel("Client template")
-    .selectOption({ label: "Endeavour Group – Dan Murphy's" });
+    .selectOption({ label: "Endeavour Group" });
   await expect(page.getByLabel("Company name")).toHaveValue("Endeavour Group");
   await page.getByLabel("Company name").fill("Endeavour Group (template)");
   await page.getByLabel("Company address").fill("edg-template");
@@ -103,25 +103,22 @@ test("a client template brings logos, websites, rules and documentation links", 
   await expect(
     page.getByRole("heading", { name: /Good (morning|afternoon|evening)/ }),
   ).toBeVisible();
-  const panel = page.getByRole("region", { name: "Client profile" });
+  // Only the Endeavour logo, in the header; no client panel on the home page.
+  const header = page.getByRole("button", { name: "Company home" });
   await expect(
-    panel.getByRole("heading", { name: "Endeavour Group – Dan Murphy's" }),
-  ).toBeVisible();
-  await expect(panel.getByRole("img", { name: /logo/ }).first()).toBeVisible();
+    header.getByRole("img", { name: "Endeavour Group logo" }),
+  ).toHaveAttribute("src", "/brand/endeavour-group-white.svg");
+  await expect(header.getByRole("img")).toHaveCount(1);
   await expect(
-    panel.getByRole("link", { name: /Dan Murphy's website/ }),
-  ).toHaveAttribute("href", "https://www.danmurphys.com.au/dm/home");
-  await expect(panel).toContainText("ABAC");
-  // Only the subscribed applications are listed, each with its Oracle documentation.
-  await expect(panel).toContainText("Oracle Eloqua");
-  await expect(panel).not.toContainText("Oracle Unity Customer Data Platform");
-  await expect(
-    panel.getByRole("link", { name: "Eloqua user guide" }),
-  ).toHaveAttribute("href", /^https:\/\/docs\.oracle\.com\//);
-  // Inside an application the client context and rules stay visible.
+    page.getByRole("region", { name: "Client profile" }),
+  ).toHaveCount(0);
+  // Inside an application: the official Oracle documentation is one click away.
   await page
     .getByLabel("Select your application")
     .selectOption({ label: "Oracle Eloqua" });
   await page.getByRole("button", { name: "Open application" }).click();
-  await expect(page.locator(".client-strip")).toContainText("Liquor retail");
+  await expect(page.getByRole("link", { name: /Oracle docs/ })).toHaveAttribute(
+    "href",
+    "https://docs.oracle.com/en/cloud/saas/marketing/eloqua-user/",
+  );
 });

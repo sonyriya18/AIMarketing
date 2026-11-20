@@ -28,6 +28,10 @@ export interface Brand {
   researchedOn?: string;
   timezone?: string;
   currency?: string;
+  /** Name of the client's business account inside Responsys (created once if missing). */
+  responsysAccount?: string;
+  /** Official website stored on that Responsys account (its business context). */
+  responsysWebsite?: string;
 }
 
 /** Logos bundled with the platform (served from /brand). Other logos must be HTTPS or data images. */
@@ -44,33 +48,32 @@ export const CLIENT_TEMPLATES: {
   brand: Brand;
 }[] = [
   {
-    key: "endeavour-danmurphys",
+    key: "endeavour-group",
     name: "Endeavour Group",
     slug: "endeavour-group",
     brand: {
-      template: "endeavour-danmurphys",
-      displayName: "Endeavour Group – Dan Murphy's",
+      template: "endeavour-group",
+      displayName: "Endeavour Group",
       summary:
-        "Dan Murphy's is a liquor retail brand of Endeavour Group, Australia's largest retail drinks network and portfolio of licensed hotels.",
+        "Endeavour Group is Australia's largest retail drinks network and portfolio of licensed hotels.",
       sector: "liquor_retail",
-      color: "#1c4220",
+      color: "#14364a",
       logos: {
         primary: "/brand/endeavour-group.svg",
-        secondary: "/brand/danmurphys-logo.svg",
         onDark: "/brand/endeavour-group-white.svg",
       },
-      website: "https://www.danmurphys.com.au/dm/home",
+      website: "https://www.endeavourgroup.com.au/",
       links: [
-        {
-          label: "Dan Murphy's website",
-          url: "https://www.danmurphys.com.au/dm/home",
-        },
         {
           label: "Endeavour Group website",
           url: "https://www.endeavourgroup.com.au/",
         },
       ],
       appLinks: {},
+      // The business account Responsys already knows for this client (its own preset), so
+      // Responsys keeps its configured business context.
+      responsysAccount: "Endeavour Group - DM",
+      responsysWebsite: "https://www.danmurphys.com.au/dm/home",
       facts: [
         {
           id: "W1",

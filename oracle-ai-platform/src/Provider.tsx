@@ -162,7 +162,10 @@ export function NewCompanyForm({
       }}
     >
       <div className="form-row">
-        <Field label="Client template" hint="Pre-fills logos, websites, context facts and marketing rules (editable later)">
+        <Field
+          label="Client template"
+          hint="Pre-fills logos, websites, context facts and marketing rules (editable later)"
+        >
           <select
             value={template}
             onChange={(e) => {
@@ -273,7 +276,7 @@ function CompanyRow({
     <article className="company-card">
       <header>
         <div className="company-title">
-          {c.brand?.logos?.primary && <span className="brand"><BrandLogos brand={c.brand} /></span>}
+          {c.brand?.logos?.primary && <BrandLogos brand={c.brand} light />}
           <h3>{c.brand?.displayName || c.name}</h3>
           <small className="muted">
             /?company={c.slug} · {c.members} member(s) · created{" "}
