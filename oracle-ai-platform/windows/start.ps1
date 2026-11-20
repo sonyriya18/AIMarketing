@@ -2,6 +2,8 @@
 # database and Responsys itself (served at http://responsys.localhost:3006, same sign-in).
 $ErrorActionPreference = 'Stop'
 $platform = Split-Path -Parent $PSScriptRoot
+$versionFile = Join-Path $platform 'VERSION.txt'
+if (Test-Path $versionFile) { Write-Host (Get-Content $versionFile -Raw).Trim() -ForegroundColor Cyan }
 $rs = Join-Path $platform 'responsys'
 $node = Join-Path $rs 'runtime\node\node.exe'
 if (-not (Test-Path $node)) {

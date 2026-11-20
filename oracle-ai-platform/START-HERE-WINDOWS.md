@@ -16,8 +16,9 @@ Client included as a template: **Endeavour Group** (logo in the header, official
 ## 1. Extract (once)
 
 1. Make a folder, for example `C:\Apps`.
-2. Extract **every part** (`Oracle-AI-Platform-v8-Part01.zip`, `Part02`, …) into that **same folder**. When Windows asks to merge folders or replace files, choose **Yes to all**.
-3. You now have `C:\Apps\Oracle-AI-Platform\oracle-ai-platform\` with `1-SETUP.cmd`, `2-START.cmd` and `3-CHECK-AI.cmd` inside.
+2. Right-click `Oracle-AI-Platform-Final.zip` → **Extract All** → choose `C:\Apps`.
+3. You now have `C:\Apps\Oracle-AI-Platform-Final\oracle-ai-platform\` with `1-SETUP.cmd`, `2-START.cmd` and `3-CHECK-AI.cmd` inside. Open **that** `oracle-ai-platform` folder in VS Code.
+4. `2-START.cmd` prints the release on its first line (see `VERSION.txt`), so you can check you are running this version.
 
 Nothing else needs to be installed. Node.js 24 and PostgreSQL 16 are included in `responsys\runtime`.
 
