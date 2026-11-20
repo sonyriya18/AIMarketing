@@ -82,7 +82,7 @@ const csv = (v: unknown) =>
 export function createApp(db: Database, cfg: Config) {
   const app = express();
   app.disable("x-powered-by");
-  // responsys.<host>:<port> is the unmodified Responsys v17 app (same port, platform sign-in).
+  // responsys.<host>:<port> is the unmodified Responsys app (same port, platform sign-in).
   if (cfg.responsysDir)
     app.use(responsysGateway(cfg, () => responsysRuntime.current, db));
   if (cfg.trustProxyHops) app.set("trust proxy", cfg.trustProxyHops);
@@ -384,7 +384,7 @@ export function createApp(db: Database, cfg: Config) {
       res.json({ ok: true });
     }),
   );
-  // What the Responsys card shows: is v17 running, how users sign in, which AI it uses.
+  // What the Responsys card shows: is Responsys running, how users sign in, which AI it uses.
   api.get(
     "/responsys/status",
     asyncRoute(async (req, res) => {
@@ -408,15 +408,6 @@ export function createApp(db: Database, cfg: Config) {
             ? `${cfg.aiProvider === "gemini" ? "Gemini" : "ChatGPT"} · ${cfg.aiModel}`
             : "Rule-based (no AI key)",
         opens: cfg.responsysDir ? "Inside the platform" : "In this window",
-        // The company's Responsys business account, prepared automatically on first open.
-        account: await db
-          .query(
-            `SELECT brand->>'responsysAccount' AS a,brand->>'displayName' AS d,name,responsys_account_id AS id FROM workspaces WHERE id=$1`,
-            [c.workspaceId],
-          )
-          .then(({ rows }) =>
-            rows[0]?.id ? rows[0].a || rows[0].d || rows[0].name : null,
-          ),
       });
     }),
   );
@@ -430,9 +421,9 @@ export function createApp(db: Database, cfg: Config) {
           422,
           cfg.production
             ? "Your platform provider has not set the Responsys address for this company yet"
-            : "Responsys v17 was not found in the platform's \"responsys\" folder, so it has no address yet. Put Responsys v17 there and double-click 1-SETUP.cmd, then 2-START.cmd. (Or the provider can set this company's Responsys address in the Provider console.)",
+            : 'Responsys was not found in the platform\'s "responsys" folder, so it has no address yet. Extract the complete package again, then double-click 1-SETUP.cmd and 2-START.cmd.',
         );
-      // The platform runs v17 itself (local): wait for it to answer, or say exactly what is wrong.
+      // The platform runs Responsys itself (local): wait for it to answer, or say exactly what is wrong.
       const runtime = responsysRuntime.current;
       if (
         runtime &&
@@ -444,15 +435,15 @@ export function createApp(db: Database, cfg: Config) {
         if (runtime.state === "starting")
           throw new HttpError(
             503,
-            "Responsys v17 is still starting (the first start can take a minute). Click Oracle Responsys again in a moment.",
+            "Responsys is still starting (the first start can take a minute). Click Oracle Responsys again in a moment.",
           );
         if (runtime.state !== "running")
           throw new HttpError(503, runtime.message);
       }
       if (cfg.production && !origin.startsWith("https://"))
         throw new HttpError(422, "Responsys launch URL must use HTTPS");
-      // With single sign-on, Responsys v17 starts its own OIDC sign-in, which this platform
-      // answers only for subscribed companies. Without it, v17 keeps its own sign-in.
+      // With single sign-on, Responsys starts its own OIDC sign-in, which this platform
+      // answers only for subscribed companies. Without it, Responsys keeps its own sign-in.
       res.json({
         url: cfg.ssoSecret ? origin + RESPONSYS_LOGIN : origin + "/",
         singleSignOn: !!cfg.ssoSecret,

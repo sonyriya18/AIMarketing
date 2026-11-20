@@ -130,7 +130,7 @@ export default function App() {
     setIntent(next);
     if (id === "responsys") {
       try {
-        // Checks the subscription and that v17 is running (the reason is shown if not).
+        // Checks the subscription and that Responsys is running (the reason is shown if not).
         const r = await api("/responsys");
         // Behind this platform, Responsys opens inside the platform window like the other
         // tools; otherwise in this window at the company's Responsys address.

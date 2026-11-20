@@ -1,5 +1,5 @@
-// One port for all four tools: requests for responsys.<host>:<port> go to the v17 process
-// unchanged; everything else is the platform. Uses a stand-in upstream (not v17) on a free port.
+// One port for all four tools: requests for responsys.<host>:<port> go to the Responsys process
+// unchanged; everything else is the platform. Uses a stand-in upstream (not Responsys) on a free port.
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import http, { type Server } from "node:http";
 import type { AddressInfo } from "node:net";
@@ -59,7 +59,7 @@ beforeAll(async () => {
         host: req.headers.host,
       });
       res.writeHead(201, { "content-type": "text/plain", "x-v17": "yes" });
-      res.end("from v17");
+      res.end("from Responsys");
     });
   });
   await new Promise<void>((r) => upstream.listen(0, "127.0.0.1", r));
@@ -70,8 +70,8 @@ afterAll(async () => {
   await db?.close();
 });
 
-describe("one-port gateway for Responsys v17", () => {
-  it("serves v17 at responsys.localhost:3006 and the platform everywhere else", async () => {
+describe("one-port gateway for Responsys", () => {
+  it("serves Responsys at responsys.localhost:3006 and the platform everywhere else", async () => {
     const cfg = make(port);
     expect(cfg.responsysUrl).toBe("http://responsys.localhost:3006");
     db = new Database(cfg, true);
@@ -82,7 +82,7 @@ describe("one-port gateway for Responsys v17", () => {
       .set("Content-Type", "application/json")
       .send({ a: 1 })
       .expect(201);
-    expect(r.text).toBe("from v17");
+    expect(r.text).toBe("from Responsys");
     expect(r.headers["x-v17"]).toBe("yes");
     expect(seen).toMatchObject({
       method: "POST",
@@ -95,7 +95,7 @@ describe("one-port gateway for Responsys v17", () => {
       .set("Host", "localhost:3006")
       .expect(200, { status: "ok" });
   });
-  it("shows a clear page while v17 is not answering", async () => {
+  it("shows a clear page while Responsys is not answering", async () => {
     // A port that was free a moment ago: nothing listens there.
     const probe = http.createServer();
     await new Promise<void>((r) => probe.listen(0, "127.0.0.1", r));
@@ -107,9 +107,9 @@ describe("one-port gateway for Responsys v17", () => {
       .get("/")
       .set("Host", "responsys.localhost:3006")
       .expect(502);
-    expect(r.text).toMatch(/Responsys v17 is not answering yet/);
+    expect(r.text).toMatch(/Responsys is not answering yet/);
   });
-  it("gives v17 only its sign-in settings, never the platform's database or secrets", () => {
+  it("gives Responsys only its sign-in settings, never the platform's database or secrets", () => {
     const cfg = make(port);
     const env = responsysEnv(cfg, {
       PATH: "/bin",
@@ -131,7 +131,7 @@ describe("one-port gateway for Responsys v17", () => {
     expect(env).not.toHaveProperty("SESSION_SECRET");
     expect(env).not.toHaveProperty("GEMINI_API_KEY");
   });
-  it("shares one AI key (Gemini or ChatGPT) with v17", () => {
+  it("shares one AI key (Gemini or ChatGPT) with Responsys", () => {
     const gemini = config({
       ...base(port),
       AI_PROVIDER: "gemini",
@@ -261,7 +261,7 @@ describe("a key or model that was not pasted correctly", () => {
 });
 
 describe("Responsys inside the platform window", () => {
-  it("allows framing only by the platform and keeps v17's sign-in cookie usable there", () => {
+  it("allows framing only by the platform and keeps Responsys's sign-in cookie usable there", () => {
     const out = framable(
       {
         "x-frame-options": "SAMEORIGIN",

@@ -355,7 +355,7 @@ function CompanyRow({
                 )
               }
             >
-              <PlugZap size={16} /> Check Responsys v17
+              <PlugZap size={16} /> Check Responsys
             </Button>
           </div>
           {check && (

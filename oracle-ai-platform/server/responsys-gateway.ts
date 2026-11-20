@@ -1,7 +1,7 @@
 // One port for all four tools (local development). The platform starts the unmodified Responsys
-// v17 app from its own folder on an internal port and serves it at http://responsys.<host>:<port>.
-// v17 receives its sign-in settings as environment variables (single sign-on through /sso), so no
-// v17 file is changed and its own .env.local keeps supplying the database and AI settings.
+// Responsys app from its own folder on an internal port and serves it at http://responsys.<host>:<port>.
+// Responsys receives its sign-in settings as environment variables (single sign-on through /sso), so no
+// Responsys file is changed and its own .env.local keeps supplying the database and AI settings.
 import http from "node:http";
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
@@ -24,11 +24,11 @@ import {
   prepareResponsys,
 } from "./responsys-link";
 
-// Operating-system variables v17 may need. Platform database and session secrets are never
-// passed: v17 reads its own from its .env.local. The only shared setting is the AI key (Gemini or
+// Operating-system variables Responsys may need. Platform database and session secrets are never
+// passed: Responsys reads its own from its .env.local. The only shared setting is the AI key (Gemini or
 // ChatGPT: one key for all four tools), unless RESPONSYS_SHARE_AI=false.
 // Network settings for office networks (company proxy, Windows certificates) are passed too, so
-// v17 reaches the AI service the same way the platform does.
+// Responsys reaches the AI service the same way the platform does.
 const OS_KEYS =
   /^(path|pathext|systemroot|windir|comspec|home|homedrive|homepath|userprofile|appdata|localappdata|programdata|programfiles(\(x86\))?|temp|tmp|tmpdir|lang|lc_all|os|processor_architecture|number_of_processors|computername|username|user|shell|xdg_runtime_dir|https?_proxy|no_proxy|node_use_env_proxy|node_options|node_use_system_ca|node_extra_ca_certs)$/i;
 
@@ -36,7 +36,7 @@ export function responsysEnv(cfg: Config, base: NodeJS.ProcessEnv) {
   const env: Record<string, string> = {};
   for (const [k, v] of Object.entries(base))
     if (v !== undefined && OS_KEYS.test(k)) env[k] = v;
-  // With a company proxy, v17's own requests use it too, except its sign-in calls to this platform.
+  // With a company proxy, Responsys's own requests use it too, except its sign-in calls to this platform.
   const proxy = env.HTTPS_PROXY || env.https_proxy;
   const local = "localhost,127.0.0.1,::1,.localhost";
   const proxyEnv: Record<string, string> = proxy
@@ -57,9 +57,9 @@ export function responsysEnv(cfg: Config, base: NodeJS.ProcessEnv) {
     OIDC_ISSUER_URL: cfg.origin + "/sso",
     OIDC_CLIENT_ID: SSO_CLIENT_ID,
     OIDC_CLIENT_SECRET: cfg.ssoSecret,
-    // The platform serves v17 through this gateway; hot-reload sockets are not proxied.
+    // The platform serves Responsys through this gateway; hot-reload sockets are not proxied.
     DISABLE_HMR: "true",
-    // One AI key for all four tools: v17 gets the same Gemini or ChatGPT (OpenAI) settings.
+    // One AI key for all four tools: Responsys gets the same Gemini or ChatGPT (OpenAI) settings.
     ...(cfg.shareAiWithResponsys && cfg.aiKey && cfg.aiProvider === "gemini"
       ? {
           AI_PROVIDER: "gemini",
@@ -81,7 +81,7 @@ export function responsysEnv(cfg: Config, base: NodeJS.ProcessEnv) {
   };
 }
 
-/** The v17 process started by this server, if any (read by the gateway and the provider check). */
+/** The Responsys process started by this server, if any (read by the gateway and the provider check). */
 export const responsysRuntime: { current: ResponsysProcess | null } = {
   current: null,
 };
@@ -91,10 +91,10 @@ export interface ResponsysProcess {
   stop: () => void;
 }
 
-/** Why v17 cannot start yet, in plain words (null when its folder is set up). */
+/** Why Responsys cannot start yet, in plain words (null when its folder is set up). */
 export function responsysSetupProblem(dir: string): string | null {
   if (!existsSync(join(dir, "server", "dev.ts")))
-    return `Responsys v17 was not found in ${dir}. It belongs in the \"responsys\" folder inside the platform folder. Then double-click 1-SETUP.cmd.`;
+    return `Responsys was not found in ${dir}. It belongs in the \"responsys\" folder inside the platform folder. Then double-click 1-SETUP.cmd.`;
   if (!existsSync(join(dir, "node_modules", "tsx", "dist", "cli.mjs")))
     return "Responsys is not installed yet (responsys\\node_modules is missing). Extract every part of the download into the same folder, then double-click 1-SETUP.cmd.";
   const envFile = join(dir, ".env.local");
@@ -147,9 +147,9 @@ export function ensureResponsysDatabase(dir: string): string | null {
 }
 
 /**
- * Local development only. Sign-in links that v17 stored for an earlier local platform install
+ * Local development only. Sign-in links that Responsys stored for an earlier local platform install
  * (older, random subjects from this same local issuer) are cleared, so the same email links again
- * at the next sign-in. Users, workspaces and data in v17 are not changed.
+ * at the next sign-in. Users, workspaces and data in Responsys are not changed.
  */
 export async function relinkLocalResponsysUsers(cfg: Config): Promise<number> {
   if (cfg.production) return 0;
@@ -173,12 +173,12 @@ export async function relinkLocalResponsysUsers(cfg: Config): Promise<number> {
   }
 }
 
-/** Turns v17's last start-up output into one clear next step. */
+/** Turns Responsys's last start-up output into one clear next step. */
 export function explainResponsysExit(output: string, port: number): string {
   if (/password authentication failed/i.test(output))
-    return "Responsys v17 could not sign in to PostgreSQL (wrong database password). Double-click 1-SETUP.cmd again, then 2-START.cmd.";
+    return "Responsys could not sign in to PostgreSQL (wrong database password). Double-click 1-SETUP.cmd again, then 2-START.cmd.";
   if (/ECONNREFUSED[^\n]*5432|connect ECONNREFUSED/i.test(output))
-    return 'PostgreSQL is not running, so Responsys v17 cannot start. Start it (Windows: press Win+R, type services.msc, find "postgresql", click Start), then double-click 2-START.cmd again.';
+    return 'PostgreSQL is not running, so Responsys cannot start. Start it (Windows: press Win+R, type services.msc, find "postgresql", click Start), then double-click 2-START.cmd again.';
   if (/database "[^"]+" does not exist/i.test(output))
     return "The Responsys database does not exist yet. Double-click 1-SETUP.cmd, then 2-START.cmd.";
   if (/EADDRINUSE/i.test(output))
@@ -188,16 +188,16 @@ export function explainResponsysExit(output: string, port: number): string {
     .map((l) => l.trim())
     .filter(Boolean)
     .pop();
-  return `Responsys v17 stopped${last ? `: ${last.slice(0, 300)}` : ""}. See the [responsys] lines in the 2-START window.`;
+  return `Responsys stopped${last ? `: ${last.slice(0, 300)}` : ""}. See the [responsys] lines in the 2-START window.`;
 }
 
-/** Starts v17 (`tsx server/dev.ts` in its folder) and restarts it once if it exits early. */
+/** Starts Responsys (`tsx server/dev.ts` in its folder) and restarts it once if it exits early. */
 export function startResponsys(cfg: Config): ResponsysProcess {
   const dir = cfg.responsysDir;
   const tsx = join(dir, "node_modules", "tsx", "dist", "cli.mjs");
   const status: ResponsysProcess = {
     state: "starting",
-    message: "Responsys v17 is starting",
+    message: "Responsys is starting",
     stop: () => {},
   };
   const problem = responsysSetupProblem(dir);
@@ -291,7 +291,7 @@ export function startResponsys(cfg: Config): ResponsysProcess {
         res.resume();
         if (res.statusCode === 200) {
           status.state = "running";
-          status.message = "Responsys v17 is running";
+          status.message = "Responsys is running";
         }
       },
     );
@@ -303,7 +303,7 @@ export function startResponsys(cfg: Config): ResponsysProcess {
     clearInterval(poll);
     child?.kill();
   };
-  console.log(`[responsys] Starting Responsys v17 from ${dir}`);
+  console.log(`[responsys] Starting Responsys from ${dir}`);
   return status;
 }
 
@@ -312,11 +312,11 @@ const unavailable = (res: express.Response, status: ResponsysProcess | null) =>
     .status(502)
     .type("html")
     .send(
-      `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Responsys is starting</title><body style="font-family:system-ui;max-width:640px;margin:10vh auto;padding:0 16px;line-height:1.5"><h1>Responsys v17 is not answering yet</h1><p>${(status?.message || "Responsys v17 is starting").replace(/[<>&]/g, "")}. Refresh in a few seconds.</p></body>`,
+      `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Responsys is starting</title><body style="font-family:system-ui;max-width:640px;margin:10vh auto;padding:0 16px;line-height:1.5"><h1>Responsys is not answering yet</h1><p>${(status?.message || "Responsys is starting").replace(/[<>&]/g, "")}. Refresh in a few seconds.</p></body>`,
     );
 
 /**
- * v17 forbids being shown inside another page. Behind this gateway it may be shown inside the
+ * Responsys forbids being shown inside another page. Behind this gateway it may be shown inside the
  * platform window, and only there: the frame rule names the platform origin. Nothing else in the
  * response changes.
  */
@@ -337,9 +337,9 @@ export function framable(
       `frame-ancestors ${platformOrigin}`,
     ].join("; ");
   } else out["content-security-policy"] = `frame-ancestors ${platformOrigin}`;
-  // To the browser, responsys.localhost and localhost are different sites, so v17's sign-in
+  // To the browser, responsys.localhost and localhost are different sites, so Responsys's sign-in
   // cookie would be blocked inside the platform window. It is marked for use inside a frame,
-  // kept separate per top-level site (Partitioned). v17 still checks its own CSRF token.
+  // kept separate per top-level site (Partitioned). Responsys still checks its own CSRF token.
   const cookies = out["set-cookie"];
   if (cookies)
     out["set-cookie"] = (
@@ -371,7 +371,7 @@ export function embedStyle(html: string) {
 }
 
 /**
- * Forwards requests for responsys.<host>:<port> to v17 unchanged (method, path, headers, body and
+ * Forwards requests for responsys.<host>:<port> to Responsys unchanged (method, path, headers, body and
  * streaming responses). Must run before any body parser.
  */
 export function responsysGateway(

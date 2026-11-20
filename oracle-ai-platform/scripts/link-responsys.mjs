@@ -1,9 +1,9 @@
-// Links your Responsys v17 app to this platform's sign-in (single sign-on). No v17 code is
+// Links your Responsys app to this platform's sign-in (single sign-on). No Responsys code is
 // changed: only its local settings file (.env.local), after a backup. Secrets are generated here,
 // written to the two local settings files and never printed.
 //
 //   npm run responsys:link -- "C:\path\to\AIMarketing"          link
-//   npm run responsys:link -- "C:\path\to\AIMarketing" --undo   restore v17's previous sign-in
+//   npm run responsys:link -- "C:\path\to\AIMarketing" --undo   restore Responsys's previous sign-in
 import { randomBytes } from "node:crypto";
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -17,23 +17,21 @@ const fail = (msg) => {
 };
 if (!target)
   fail(
-    'Give the folder of your Responsys v17 app, for example:\n  npm run responsys:link -- "C:\\Users\\you\\rci\\AIMarketing"',
+    'Give the folder of your Responsys app, for example:\n  npm run responsys:link -- "C:\\Users\\you\\rci\\AIMarketing"',
   );
-const v17 = resolve(target);
-const pkg = join(v17, "package.json");
+const rsDir = resolve(target);
+const pkg = join(rsDir, "package.json");
 if (
   !existsSync(pkg) ||
   JSON.parse(readFileSync(pkg, "utf8")).name !==
     "responsys-campaign-intelligence"
 )
-  fail(
-    `${v17} is not the Responsys v17 app folder (no matching package.json).`,
-  );
-const v17Env = join(v17, ".env.local"),
-  backup = join(v17, ".env.local.before-sso");
+  fail(`${rsDir} is not the Responsys app folder (no matching package.json).`);
+const v17Env = join(rsDir, ".env.local"),
+  backup = join(rsDir, ".env.local.before-sso");
 if (!existsSync(v17Env))
   fail(
-    `${v17Env} does not exist. Set up v17 first (in that folder: npm ci, then npm run setup:local).`,
+    `${v17Env} does not exist. Set up Responsys first (in that folder: npm ci, then npm run setup:local).`,
   );
 
 const read = (f) => (existsSync(f) ? readFileSync(f, "utf8") : "");
@@ -61,7 +59,7 @@ if (undo) {
   copyFileSync(backup, v17Env);
   writeFileSync(platformEnv, set(platform, "RESPONSYS_SSO_SECRET", ""));
   console.log(
-    "\nRestored v17's previous sign-in settings and switched platform single sign-on off.\nRestart both apps (Ctrl+C, then npm run dev in each folder).\n",
+    "\nRestored Responsys's previous sign-in settings and switched platform single sign-on off.\nRestart both apps (Ctrl+C, then npm run dev in each folder).\n",
   );
   process.exit(0);
 }
@@ -73,7 +71,7 @@ try {
   v17Url = new URL(get(v17Text, "APP_BASE_URL") || "http://localhost:3000")
     .origin;
 } catch {
-  fail("APP_BASE_URL in v17's .env.local is not a valid address.");
+  fail("APP_BASE_URL in Responsys's .env.local is not a valid address.");
 }
 if (!existsSync(backup)) copyFileSync(v17Env, backup);
 const secret = randomBytes(32).toString("base64url");
@@ -90,13 +88,13 @@ platform = set(platform, "RESPONSYS_URL", v17Url);
 platform = set(platform, "RESPONSYS_SSO_SECRET", secret);
 writeFileSync(platformEnv, platform);
 console.log(`
-Linked. Responsys v17 (${v17Url}) now signs in through this platform (${origin}).
-- v17 settings backup: ${backup}
+Linked. Responsys (${v17Url}) now signs in through this platform (${origin}).
+- Responsys settings backup: ${backup}
 - Secrets were written to both .env files and are not shown here.
 
 Next:
   1. Restart this platform:  Ctrl+C, then npm run dev
-  2. Restart Responsys v17:   in ${v17}: Ctrl+C, then npm run dev
+  2. Restart Responsys:   in ${rsDir}: Ctrl+C, then npm run dev
   3. In the platform, give a company the Responsys tool (Provider console), then click
      "Oracle Responsys" on that company's home page.
 To undo: npm run responsys:link -- "${target}" --undo

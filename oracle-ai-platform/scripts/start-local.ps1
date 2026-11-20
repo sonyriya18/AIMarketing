@@ -18,5 +18,5 @@ if (-not $installed -or [IO.File]::ReadAllText($stampPath).Trim() -ne $lockHash)
   [IO.File]::WriteAllText($stampPath,$lockHash)
 }
 Write-Host 'Open the address printed below (http://localhost:3006 unless .env sets APP_ORIGIN). Keep this window open while using the platform.'
-Write-Host 'Responsys v17 runs separately and is not modified; see docs/RESPONSYS_SSO.md to open it through the platform.'
+Write-Host 'Responsys runs separately and is not modified; see docs/RESPONSYS_SSO.md to open it through the platform.'
 & $nodePath $npmCli run dev

@@ -1,4 +1,4 @@
-// Responsys v17 inside the platform window, like Eloqua, Unity and Infinity. The unmodified v17
+// Responsys inside the platform window, like Eloqua, Unity and Infinity. The unmodified Responsys
 // app is shown in a frame under the platform header; it signs in through the platform (single
 // sign-on), which checks the company's Responsys subscription.
 import React, { useEffect, useState } from "react";
@@ -14,7 +14,6 @@ export interface ResponsysStatus {
   signIn: string;
   ai: string;
   opens: string;
-  account?: string | null;
 }
 
 export function useResponsysStatus(enabled: boolean) {

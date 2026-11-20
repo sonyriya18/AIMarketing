@@ -1,4 +1,4 @@
-// Studio screens, modelled on the Responsys v17 screens: entity deep dive against the account
+// Studio screens, modelled on the Responsys screens: entity deep dive against the account
 // pattern, head-to-head and portfolio comparison, flow diagrams, the Eloqua email builder and
 // campaign preview, the Unity audience builder and customer profile. All numbers come from the
 // server (/sources/:id/studio); this file only arranges and draws them.

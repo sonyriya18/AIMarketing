@@ -1,6 +1,6 @@
-// Single sign-on for the unmodified Responsys v17 application. The platform is a minimal OpenID
+// Single sign-on for the unmodified Responsys application. The platform is a minimal OpenID
 // Connect provider (authorization code + PKCE S256, RS256 ID tokens) with exactly one client:
-// Responsys v17, configured through its own OIDC settings (no v17 code changes). A code is issued
+// Responsys, configured through its own OIDC settings (no Responsys code changes). A code is issued
 // only when the signed-in user's current company subscribes to Responsys (active company, tool
 // inside its dates, user granted the tool), and only to that company's registered Responsys address.
 import express from "express";
@@ -22,9 +22,9 @@ export const issuerOf = (cfg: Config) => cfg.origin + "/sso";
 /** Prefix of local-development subjects (see subjectOf). */
 export const LOCAL_SUBJECT_PREFIX = "local-";
 /**
- * The subject Responsys v17 links to its user. Production uses the platform user id. Local
+ * The subject Responsys links to its user. Production uses the platform user id. Local
  * development derives it from the email, so reinstalling the platform (a new local database)
- * still signs in to the same v17 user instead of being refused as a different identity.
+ * still signs in to the same Responsys user instead of being refused as a different identity.
  */
 export const subjectOf = (cfg: Config, userId: string, email: string) =>
   cfg.production

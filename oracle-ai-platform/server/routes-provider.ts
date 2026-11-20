@@ -87,7 +87,10 @@ export function registerProvider(
         .parse(req.body);
       checkDates(input.tools);
       // A client template (e.g. Endeavour Group – Dan Murphy's) pre-fills the branding.
-      const brand = parseBrand({ ...(templateBrand(input.template) || {}), ...((input.brand as object) || {}) });
+      const brand = parseBrand({
+        ...(templateBrand(input.template) || {}),
+        ...((input.brand as object) || {}),
+      });
       const url = responsysOrigin(cfg, input.responsysUrl);
       const wid = id(),
         email = input.adminEmail.toLowerCase();
@@ -141,7 +144,8 @@ export function registerProvider(
           brand: z.unknown().optional(),
         })
         .parse(req.body);
-      const brand = input.brand === undefined ? undefined : parseBrand(input.brand);
+      const brand =
+        input.brand === undefined ? undefined : parseBrand(input.brand);
       if (input.tools) checkDates(input.tools);
       const wid = String(req.params.id);
       await db.transaction(async (tx) => {
@@ -186,7 +190,7 @@ export function registerProvider(
       res.json({ ok: true });
     }),
   );
-  // Real check of a company's Responsys v17 address: is it running, and which sign-in does it use?
+  // Real check of a company's Responsys address: is it running, and which sign-in does it use?
   api.post(
     "/provider/companies/:id/responsys-check",
     asyncRoute(async (req, res) => {
@@ -199,7 +203,7 @@ export function registerProvider(
             "No Responsys address is set for this company or as the platform default.",
         });
       try {
-        // The v17 started by this platform is checked directly on its internal port.
+        // The Responsys started by this platform is checked directly on its internal port.
         const target =
           cfg.responsysDir && origin === new URL(cfg.responsysUrl).origin
             ? `http://127.0.0.1:${cfg.responsysInternalPort}`
@@ -214,7 +218,7 @@ export function registerProvider(
           return res.json({
             state: "unexpected",
             origin,
-            message: `The address answered (HTTP ${r.status}) but not like Responsys v17.`,
+            message: `The address answered (HTTP ${r.status}) but not like Responsys.`,
           });
         res.json({
           state: mode === "oidc" ? "single_sign_on" : "own_sign_in",
@@ -222,9 +226,9 @@ export function registerProvider(
           message:
             mode === "oidc"
               ? cfg.ssoSecret
-                ? "Responsys v17 is running and uses single sign-on. Users open it from this platform."
-                : "Responsys v17 uses single sign-on, but RESPONSYS_SSO_SECRET is not set on this platform."
-              : "Responsys v17 is running with its own local sign-in. Run the link step in docs/RESPONSYS_SSO.md to switch it to platform sign-in.",
+                ? "Responsys is running and uses single sign-on. Users open it from this platform."
+                : "Responsys uses single sign-on, but RESPONSYS_SSO_SECRET is not set on this platform."
+              : "Responsys is running with its own local sign-in. Run the link step in docs/RESPONSYS_SSO.md to switch it to platform sign-in.",
         });
       } catch (e) {
         const runtime = responsysRuntime.current;
@@ -236,7 +240,7 @@ export function registerProvider(
           message:
             local && runtime && runtime.state !== "running"
               ? runtime.message
-              : `Responsys v17 did not answer at ${origin}: ${(e as Error).message}`,
+              : `Responsys did not answer at ${origin}: ${(e as Error).message}`,
         });
       }
     }),

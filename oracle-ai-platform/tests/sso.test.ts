@@ -1,5 +1,5 @@
-// Responsys v17 single sign-on contract test. The "Responsys" side below uses openid-client v6
-// exactly as the unmodified v17 server does (discovery with an http issuer in development,
+// Responsys single sign-on contract test. The "Responsys" side below uses openid-client v6
+// exactly as the unmodified Responsys server does (discovery with an http issuer in development,
 // authorization code + PKCE + state + nonce, ID token claims). All data is synthetic.
 import { beforeAll, afterAll, describe, it, expect } from "vitest";
 import { createServer, type Server } from "node:http";
@@ -39,7 +39,7 @@ async function signIn(who: string) {
   await call(who, "/api/auth/dev-login", { email: who + "@example.test" });
   csrf[who] = (await (await call(who, "/api/session")).json()).csrf;
 }
-// What the unmodified v17 server does: discovery, then a PKCE authorization request.
+// What the unmodified Responsys server does: discovery, then a PKCE authorization request.
 async function responsysClient(secret = SECRET) {
   const cfg = await client.discovery(
     new URL(base + "/sso"),
@@ -113,7 +113,7 @@ afterAll(async () => {
   await db?.close();
 });
 
-describe("Responsys v17 single sign-on", () => {
+describe("Responsys single sign-on", () => {
   it("publishes discovery metadata that openid-client accepts", async () => {
     const meta = await (
       await fetch(base + "/sso/.well-known/openid-configuration")
@@ -142,7 +142,7 @@ describe("Responsys v17 single sign-on", () => {
     expect(claims.email).toBe("subscribed@example.test");
     expect(claims.iss).toBe(base + "/sso");
     expect(claims.aud).toBe("responsys-v17");
-    // Local subjects come from the email, so a reinstalled platform signs in to the same v17 user.
+    // Local subjects come from the email, so a reinstalled platform signs in to the same Responsys user.
     expect(claims.sub).toMatch(/^local-[0-9a-f]{40}$/);
     // A code works once.
     await expect(exchange(c, location)).rejects.toThrow();

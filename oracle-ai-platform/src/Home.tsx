@@ -613,8 +613,6 @@ export function Home({
                 <dl className="card-stats">
                   <dt>Status</dt>
                   <dd>{responsysState(rStatus)}</dd>
-                  <dt>Business account</dt>
-                  <dd>{rStatus?.account || "Set up when first opened"}</dd>
                   <dt>AI</dt>
                   <dd>{rStatus?.ai || "—"}</dd>
                   <dt>Connection</dt>

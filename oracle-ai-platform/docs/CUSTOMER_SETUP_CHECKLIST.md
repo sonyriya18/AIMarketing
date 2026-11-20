@@ -9,9 +9,9 @@ Provide values through a secret manager or a local `.env` on the server. Never p
 - Who gets connector-administration and approval permissions.
 - Source accounts per application, labeled production, test or sandbox, and which are restricted.
 
-**Responsys v17 (single sign-on)**
-- The HTTPS address of each company's v17 app (one shared `RESPONSYS_URL`, or one per company in the Provider console).
-- A secret-manager entry shared by the platform (`RESPONSYS_SSO_SECRET`) and v17 (`OIDC_CLIENT_SECRET`). No v17 code changes; v17's settings use `AUTH_MODE=oidc`, `OIDC_ISSUER_URL=https://<platform>/sso` and `OIDC_CLIENT_ID=responsys-v17`.
+**Responsys (single sign-on)**
+- The HTTPS address of each company's Responsys app (one shared `RESPONSYS_URL`, or one per company in the Provider console).
+- A secret-manager entry shared by the platform (`RESPONSYS_SSO_SECRET`) and Responsys (`OIDC_CLIENT_SECRET`). No Responsys code changes; Responsys's settings use `AUTH_MODE=oidc`, `OIDC_ISSUER_URL=https://<platform>/sso` and `OIDC_CLIENT_ID=responsys-v17`.
 
 **Subscriptions**
 - For each client company: name, sign-in address, first administrator email, and the subscribed tools with start and end dates.

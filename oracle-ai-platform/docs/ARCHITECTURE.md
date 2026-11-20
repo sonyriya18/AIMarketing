@@ -4,9 +4,9 @@
 
 ## 1. Read-only design reference: the protected Responsys app (`responsys/`)
 
-The new platform reuses the *idea* and visual family of the user's v17 Responsys app. It does not import, wrap or proxy it.
+The new platform reuses the *idea* and visual family of the user's Responsys app. It does not import, wrap or proxy it.
 
-| Responsys v17 pattern (read-only) | Reused as an idea in the new platform |
+| Responsys pattern (read-only) | Reused as an idea in the new platform |
 |---|---|
 | `src/components/Header.tsx`: Summary · AI Simulator · Analyze Campaign · Compare Campaigns · Ask AI | The same five-tab primary navigation, with app-specific labels |
 | `ExecutiveBriefing.tsx`, `AiSummary.tsx` | Summary: KPI cards, ranked recommendations, sections, limitations |
@@ -18,23 +18,23 @@ The new platform reuses the *idea* and visual family of the user's v17 Responsys
 | `features/drafts`, `CampaignBuilder.tsx` | Draft studio: domain drafts with revisions and approvals (no publishing) |
 | `shared/contracts`, `server/modules/reports` (versioned report snapshots) | Immutable report snapshots with definition versions and provenance |
 
-The user-supplied archive's known SHA-256 (`bd5c8b…da26`) cannot be checked here because the archive itself was not supplied in this session. The protected copy is the user-approved working v17 lineage (v17 plus three later commits), and its differences from the 23 Oct archive baseline are listed by `node preservation/verify-responsys.mjs --archive`.
+The user-supplied archive's known SHA-256 (`bd5c8b…da26`) cannot be checked here because the archive itself was not supplied in this session. The protected copy is the user-approved working Responsys lineage (Responsys plus three later commits), and its differences from the 23 Oct archive baseline are listed by `node preservation/verify-responsys.mjs --archive`.
 
 ## 2. Separation and protection boundary
 
 ```
 ┌──────────── oracle-ai-platform/ (one folder) ────────────┐
-│ responsys/        protected v17 (byte-identical, hash-checked; own package.json, DB)
+│ responsys/        protected Responsys (byte-identical, hash-checked; own package.json, DB)
 │ preservation/     verify-responsys.mjs + RESPONSYS_BASELINE.json (outside the protected tree)
 │ windows/          1-SETUP.cmd / 2-START.cmd scripts
 │ server/ src/ …    the platform: own package.json/lockfile, DB, worker, tests
 └──────────────────────────────────────────────────────────┘
 ```
 
-- No file is written inside `responsys/`. No shared imports, dependencies, middleware, CSS or database; the platform only starts v17 and forwards `responsys.localhost` requests to it.
-- The "Oracle Responsys" card opens the unmodified v17 app (the company's own address, else `RESPONSYS_URL`) in a new tab, with no iframe.
-  - With `RESPONSYS_SSO_SECRET` set, v17 signs in through the platform's OIDC provider (`/sso`). The provider issues a code only for subscribed companies and only to that company's registered v17 address (`docs/RESPONSYS_SSO.md`).
-  - Without it, v17 keeps its own sign-in.
+- No file is written inside `responsys/`. No shared imports, dependencies, middleware, CSS or database; the platform only starts Responsys and forwards `responsys.localhost` requests to it.
+- The "Oracle Responsys" card opens the unmodified Responsys app (the company's own address, else `RESPONSYS_URL`) in a new tab, with no iframe.
+  - With `RESPONSYS_SSO_SECRET` set, Responsys signs in through the platform's OIDC provider (`/sso`). The provider issues a code only for subscribed companies and only to that company's registered Responsys address (`docs/RESPONSYS_SSO.md`).
+  - Without it, Responsys keeps its own sign-in.
   - If no address is set, the card says so.
 - The preservation check fails on any added, removed, renamed or changed file and refuses to regenerate its own baseline.
 

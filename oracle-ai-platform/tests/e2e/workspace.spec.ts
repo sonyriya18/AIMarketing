@@ -160,7 +160,7 @@ test("company setup and entitled launcher", async () => {
   ).toHaveCount(0);
   await page.getByRole("button", { name: /Oracle Responsys/ }).click();
   await expect(page.getByRole("alert")).toContainText(
-    "Responsys v17 was not found in the platform",
+    "Responsys was not found in the platform",
   );
   await page.screenshot({ path: "test-results/portal.png", fullPage: true });
 });

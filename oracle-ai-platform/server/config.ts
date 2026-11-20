@@ -19,7 +19,7 @@ export interface Config {
   providerName: string;
   bootstrapEmail: string;
   responsysUrl: string;
-  /** Development: the v17 folder the platform starts and serves at responsys.<host>:<port>. */
+  /** Development: the Responsys folder the platform starts and serves at responsys.<host>:<port>. */
   responsysDir: string;
   responsysInternalPort: number;
   responsysHost: string;
@@ -69,11 +69,11 @@ export function config(env: NodeJS.ProcessEnv = process.env): Config {
     (!env.OIDC_ISSUER || !env.OIDC_CLIENT_ID || !env.OIDC_CLIENT_SECRET)
   )
     throw Error("OIDC configuration is incomplete");
-  // Responsys v17 started and served by the platform (development only; one port, one sign-in).
+  // Responsys started and served by the platform (development only; one port, one sign-in).
   const responsysDir = resolveResponsysDir(env);
   if (production && responsysDir)
     throw Error(
-      "RESPONSYS_DIR is for local development. In production run v17 separately and set RESPONSYS_URL.",
+      "RESPONSYS_DIR is for local development. In production run Responsys separately and set RESPONSYS_URL.",
     );
   let local: { session: string; key: string; sso?: string } | null = null;
   if (
@@ -211,7 +211,7 @@ export function config(env: NodeJS.ProcessEnv = process.env): Config {
 }
 
 /**
- * RESPONSYS_DIR, or Responsys v17 in this platform's "responsys" folder (an older layout with
+ * RESPONSYS_DIR, or Responsys in this platform's "responsys" folder (an older layout with
  * "AIMarketing" next to the platform folder also works). The folder is used even before it is set
  * up, so the platform can say exactly which setup step is missing.
  */

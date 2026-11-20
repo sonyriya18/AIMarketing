@@ -5,7 +5,7 @@ Legend: **Local** = automated test run in this build (embedded PostgreSQL unless
 | ID | Requirement | Evidence | Level |
 |---|---|---|---|
 | P1 | Responsys files unchanged, nothing added | `node preservation/verify-responsys.mjs` → PASS, 161 files | Local |
-| P2 | Responsys v17 opens through platform single sign-on only for subscribed companies; unconfigured state disclosed | sso.test (contract, openid-client 6.8.8 as in v17); api.test launcher; live local run with the real v17 | Local + live local (no deployment) |
+| P2 | Responsys opens through platform single sign-on only for subscribed companies; unconfigured state disclosed | sso.test (contract, openid-client 6.8.8 as in Responsys); api.test launcher; live local run with the real Responsys | Local + live local (no deployment) |
 | P3 | Provider controls subscriptions; companies see exactly 1/2/3/4 subscribed tools; dates and suspension apply; company admins cannot change tools | api.test "Client subscriptions"; e2e companies.spec | Local + PostgreSQL runtime role |
 | P4 | Eloqua leads, sales, events, website; Infinity website performance and time spent | modules.test (exact numbers); e2e Eloqua and Infinity journeys | Local (synthetic data only) |
 | U1 | Different entitlements → different apps; no API/URL bypass | api.test "shows each company…", "cannot bypass…" | Local + PG |

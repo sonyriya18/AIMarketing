@@ -1,5 +1,5 @@
 // Product registry and shared evidence contracts for the Oracle AI Assessment Platform.
-// Only Eloqua, Unity and Infinity are assessment modules. Responsys is the unmodified v17
+// Only Eloqua, Unity and Infinity are assessment modules. Responsys is the unmodified Responsys
 // application, opened through platform sign-in (single sign-on) when the company subscribes to it.
 export const APP_IDS = ["eloqua", "unity", "infinity"] as const;
 export type AppId = (typeof APP_IDS)[number];
@@ -51,7 +51,7 @@ export const PRODUCTS: Product[] = [
     name: "Oracle Responsys",
     short: "Responsys",
     description:
-      "Responsys Campaign Intelligence (v17): campaigns, AI simulator, Ask AI and campaign builder",
+      "Campaigns, email performance, AI simulator and campaign builder",
     summary: "",
     analyze: "",
     compare: "",
@@ -388,9 +388,9 @@ export interface Session {
   products: ProductId[];
   csrf: string;
   mode: string;
-  /** Responsys v17 opens through platform single sign-on. */
+  /** Responsys opens through platform single sign-on. */
   responsysSso: boolean;
-  /** Responsys v17 runs behind this platform, so it opens inside the platform window. */
+  /** Responsys runs behind this platform, so it opens inside the platform window. */
   responsysEmbedded: boolean;
 }
 

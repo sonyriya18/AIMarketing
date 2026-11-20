@@ -2,7 +2,7 @@
 
 **Gemini or ChatGPT, one key for all four tools.** Set `AI_PROVIDER=gemini` or `AI_PROVIDER=openai` (ChatGPT), plus `AI_MODEL` and `AI_API_KEY`.
 - The AI service's host is allowed automatically.
-- With `RESPONSYS_DIR` set, Responsys v17 gets the same provider, key and model when the platform starts it.
+- With `RESPONSYS_DIR` set, Responsys gets the same provider, key and model when the platform starts it.
 - Set `RESPONSYS_SHARE_AI=false` to stop sharing.
 
 **Supported providers.** `AI_PROVIDER=gemini` (Google Generative Language `generateContent`) or `openai-compatible` (`/chat/completions`). Set `AI_MODEL`, `AI_API_KEY` and, for compatible providers, `AI_BASE_URL`. Add the provider host (for example `generativelanguage.googleapis.com`) to `OUTBOUND_HOSTS`. Keys stay on the server and are never sent to the browser.

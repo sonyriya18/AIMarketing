@@ -1,33 +1,33 @@
-# Responsys v17 inside the platform (single sign-on)
+# Responsys inside the platform (single sign-on)
 
-Responsys is the 4th tool in the platform. It is your **unchanged v17 application**, opened from a company's home page. The platform does the sign-in, so:
+Responsys is the 4th tool in the platform. It is your **unchanged Responsys application**, opened from a company's home page. The platform does the sign-in, so:
 
 - only companies whose subscription includes **Oracle Responsys** can open it;
-- the person arrives in v17 already signed in, with their platform email.
+- the person arrives in Responsys already signed in, with their platform email.
 
-No v17 code is changed. Only v17's local settings file (`.env.local`) is switched from its own email sign-in to "sign in with the platform". A backup is kept.
+No Responsys code is changed. Only Responsys's local settings file (`.env.local`) is switched from its own email sign-in to "sign in with the platform". A backup is kept.
 
 > **Current release (Windows package).** The `responsys/` folder is now the supplied Responsys Windows release (`AIMarketing-Claude-Upload.zip` with `AIMarketing-Dependencies-Part01`–`Part07`), byte-for-byte unchanged (`node preservation/verify-responsys.mjs` checks 186 files). It brings its own Node.js 24 (`responsys\runtime\node`) and PostgreSQL 16 (`responsys\runtime\pgsql`). `1-SETUP.cmd` runs its own `Setup.ps1` once to create its private database in `responsys\.local`. When the platform starts, it starts that database and runs Responsys the same way its `Start.ps1` does (`server/index.ts` with the prebuilt screens), with the platform's sign-in and ChatGPT settings passed in as environment variables. Nothing needs to be installed on the PC. See `START-HERE-WINDOWS.md`.
 
 ## Easiest: one port (3006), one login
-Set `RESPONSYS_DIR=<your v17 folder>` in the platform's `.env`, then run `npm run dev`. The platform:
-- starts v17 itself;
+Set `RESPONSYS_DIR=<your Responsys folder>` in the platform's `.env`, then run `npm run dev`. The platform:
+- starts Responsys itself;
 - serves it at http://responsys.localhost:3006;
-- passes v17 its sign-in settings as environment variables (generated secret, platform issuer).
+- passes Responsys its sign-in settings as environment variables (generated secret, platform issuer).
 
-Nothing in v17's folder is changed, and v17 keeps its own database and AI settings from its `.env.local`. The `responsys:link` command below is only needed when v17 runs separately (for example on another server).
+Nothing in Responsys's folder is changed, and Responsys keeps its own database and AI settings from its `.env.local`. The `responsys:link` command below is only needed when Responsys runs separately (for example on another server).
 
 ## How it works
 
 1. A user clicks **Oracle Responsys** on their company's home page.
-2. v17 opens in a new tab and asks the platform to sign the user in.
+2. Responsys opens in a new tab and asks the platform to sign the user in.
 3. The platform checks all of these before answering:
    - the user is signed in to the platform;
    - their current company is active;
    - Responsys is in that company's subscription, inside its start and end dates;
    - the user has been given Responsys access;
-   - v17's address is the one registered for that company.
-4. If every check passes, v17 receives a one-time code (valid 60 seconds) and signs the user in. If not, the user sees "Responsys is not part of your subscription" and v17 is never reached.
+   - Responsys's address is the one registered for that company.
+4. If every check passes, Responsys receives a one-time code (valid 60 seconds) and signs the user in. If not, the user sees "Responsys is not part of your subscription" and Responsys is never reached.
 
 **Technical details.** The platform is a minimal OpenID Connect provider at `<platform address>/sso`:
 
@@ -40,20 +40,20 @@ Nothing in v17's folder is changed, and v17 keeps its own database and AI settin
 
 Before you start:
 
-- v17 already works on its own (you ran `npm ci` and `npm run setup:local` in its folder);
+- Responsys already works on its own (you ran `npm ci` and `npm run setup:local` in its folder);
 - the platform runs from the `oracle-ai-platform` folder.
 
-1. Open a terminal in the `oracle-ai-platform` folder and run (use your own v17 folder path):
+1. Open a terminal in the `oracle-ai-platform` folder and run (use your own Responsys folder path):
    ```
    npm run responsys:link -- "C:\Users\Sony\path\to\AIMarketing"
    ```
    This does four things:
-   - backs up v17's `.env.local` to `.env.local.before-sso`;
-   - sets v17 to sign in through the platform (`AUTH_MODE=oidc`, `OIDC_ISSUER_URL=<platform>/sso`, `OIDC_CLIENT_ID=responsys-v17`, `OIDC_CLIENT_SECRET=…`);
-   - writes `RESPONSYS_URL` (v17's address) and the same secret (`RESPONSYS_SSO_SECRET`) into the platform's `.env`;
+   - backs up Responsys's `.env.local` to `.env.local.before-sso`;
+   - sets Responsys to sign in through the platform (`AUTH_MODE=oidc`, `OIDC_ISSUER_URL=<platform>/sso`, `OIDC_CLIENT_ID=responsys-v17`, `OIDC_CLIENT_SECRET=…`);
+   - writes `RESPONSYS_URL` (Responsys's address) and the same secret (`RESPONSYS_SSO_SECRET`) into the platform's `.env`;
    - never prints the secret.
 2. Restart both apps: press **Ctrl+C** in each terminal, then run `npm run dev` in each folder.
-3. In the platform, open **Provider console** and make sure the company has **Oracle Responsys** ticked. Use **Check Responsys v17** to confirm it is running with single sign-on. (A company-specific Responsys address can still be set through the API, `PATCH /api/provider/companies/:id` with `responsysUrl`; the screen no longer shows this field.)
+3. In the platform, open **Provider console** and make sure the company has **Oracle Responsys** ticked. Use **Check Responsys** to confirm it is running with single sign-on. (A company-specific Responsys address can still be set through the API, `PATCH /api/provider/companies/:id` with `responsysUrl`; the screen no longer shows this field.)
 4. Go to that company's home page and click **Oracle Responsys**.
 
 ## No separate login, no setup screens
@@ -68,27 +68,27 @@ When the platform runs Responsys itself, a person who opens Responsys lands stra
 
 Every step is best-effort and never changes Responsys code or writes to its database directly. If a step cannot be done (for example a member not yet added), Responsys shows its own screen for that step.
 
-**To undo**, run the same command with `--undo` at the end. It restores v17's previous settings and turns platform single sign-on off.
+**To undo**, run the same command with `--undo` at the end. It restores Responsys's previous settings and turns platform single sign-on off.
 
 **If you change the platform port.** The platform's address is read from `APP_ORIGIN` in its `.env`. If you change the platform's port later (for example to 3005), run the link command again.
 
 ## Several companies
 
-- **One v17 for everyone (simplest):** set `RESPONSYS_URL` once. Each company works in its own v17 workspace.
-- **One v17 per company:** in the Provider console, set each company's own Responsys address. The platform refuses to sign a user in to any other company's v17.
+- **One Responsys for everyone (simplest):** set `RESPONSYS_URL` once. Each company works in its own Responsys workspace.
+- **One Responsys per company:** in the Provider console, set each company's own Responsys address. The platform refuses to sign a user in to any other company's Responsys.
 
 ## Production notes
 
 - Use HTTPS addresses for both apps. Production refuses `http://` Responsys addresses.
-- Platform users must sign in through your organization's identity provider (OIDC with a verified email). Only then does the platform vouch for the email to v17.
-- Store `RESPONSYS_SSO_SECRET` and v17's `OIDC_CLIENT_SECRET` in your secret manager, never in files you share.
-- v17 sessions last as long as v17's `SESSION_TTL_HOURS` (default 12 hours). Removing Responsys from a subscription blocks new sign-ins immediately. It does not end a v17 session that is already open.
+- Platform users must sign in through your organization's identity provider (OIDC with a verified email). Only then does the platform vouch for the email to Responsys.
+- Store `RESPONSYS_SSO_SECRET` and Responsys's `OIDC_CLIENT_SECRET` in your secret manager, never in files you share.
+- Responsys sessions last as long as Responsys's `SESSION_TTL_HOURS` (default 12 hours). Removing Responsys from a subscription blocks new sign-ins immediately. It does not end a Responsys session that is already open.
 
 ## Verification done
 
 | Check | Result |
 |---|---|
-| Contract test (`tests/sso.test.ts`) | Passes. Uses `openid-client` 6.8.8, the same library and version as v17, exactly as v17 calls it. Covers discovery, sign-in, one-time code, wrong secret, wrong PKCE verifier, unsubscribed company, unregistered address, signed-out user, and a subscription removed mid-sign-in. |
-| Live local test with the real, unmodified v17 | Passes (v17 on PostgreSQL 16, platform on embedded PostgreSQL). A company with Responsys opened v17 signed in as the platform user; a company without it was refused. |
+| Contract test (`tests/sso.test.ts`) | Passes. Uses `openid-client` 6.8.8, the same library and version as Responsys, exactly as Responsys calls it. Covers discovery, sign-in, one-time code, wrong secret, wrong PKCE verifier, unsubscribed company, unregistered address, signed-out user, and a subscription removed mid-sign-in. |
+| Live local test with the real, unmodified Responsys | Passes (Responsys on PostgreSQL 16, platform on embedded PostgreSQL). A company with Responsys opened Responsys signed in as the platform user; a company without it was refused. |
 | Live local test with the supplied Windows release (unchanged) | Passes on Linux with the same code: the platform started it, signed in through `/sso`, and the owner and an analyst of the same company both landed straight on the *Endeavour Group - DM* Summary with no setup screens. The Windows `.exe` runtime itself was not run here (no Windows machine in the test environment). |
 | Deployed or production test | Not done. |

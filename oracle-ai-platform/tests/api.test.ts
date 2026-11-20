@@ -282,7 +282,7 @@ describe.sequential("Access and entitlements (U1–U3)", () => {
   });
   it("keeps the Responsys launcher separate and disclosed when unconfigured", async () => {
     const r = await as("adminA").get("/responsys").expect(422);
-    expect(r.body.error).toMatch(/Responsys v17 was not found in the platform/);
+    expect(r.body.error).toMatch(/Responsys was not found in the platform/);
     await as("analyst").get("/responsys").expect(403);
   });
 });

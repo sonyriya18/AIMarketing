@@ -104,7 +104,9 @@ export async function approvedDocuments(
     );
     // The client's business profile and marketing rules (Branding & links) travel with the
     // approved playbooks, so AI answers and drafts can cite them and must follow the rules.
-    const w = await tx.query("SELECT name,brand FROM workspaces WHERE id=$1", [workspace]);
+    const w = await tx.query("SELECT name,brand FROM workspaces WHERE id=$1", [
+      workspace,
+    ]);
     return [...k.rows, ...clientDocuments(w.rows[0]?.name, w.rows[0]?.brand)];
   });
 }
